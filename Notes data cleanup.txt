@@ -5,5 +5,6 @@ Removed geolocation blank
 Removed year blank
 Removed geolocation (0,0)
 Removed everything before 1958
+Removed mass less than 10g
 
-Final count: 30105
+Final count: 19969
