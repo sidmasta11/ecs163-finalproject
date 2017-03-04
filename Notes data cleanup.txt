@@ -1,0 +1,9 @@
+First remove all non valid “non valid”
+Removed mass from 0
+Removed mass blank
+Removed geolocation blank
+Removed year blank
+Removed geolocation (0,0)
+Removed everything before 1958
+
+Final count: 30105
