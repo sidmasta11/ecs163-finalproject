@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple markers</title>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    
+    <style>
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+      function initMap() {
+        var myLatLng = {lat: -0, lng: 0};
+		var temp =     {
+		  "type" : "FeatureCollection",
+		  "features" : [
+			{
+			  "type" : "Feature",
+			  "geometry" : {
+				"type" : "Point",
+				"coordinates" : [
+				  -84.50926612,
+				  39.1423275
+				]
+			  },
+			  "properties" : {
+				"name" : "<a href=\"/Things-To-Do/Attractions/cincinnati-zoo-botanical-garden\">Cincinnati Zoo &amp; Botanical Garden</a>",
+				"description" : ""
+			  }
+			},
+			{
+			  "type" : "Feature",
+			  "geometry" : {
+				"type" : "Point",
+				"coordinates" : [
+				  -84.495935481675,
+				  39.095853705988
+				]
+			  },
+			  "properties" : {
+				"name" : "<a href=\"/Things-To-Do/Attractions/bb-riverboats-thanksgiving-day-cruise\">BB Riverboats Thanksgiving Day Cruise</a>",
+				"description" : ""
+			  }
+			}
+		  ]
+		}
+		
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: myLatLng
+        });
+        
+		//var test = map.data.addGeoJson('map.geojson');
+		map.data.addGeoJson(temp);
+		
+		console.log(temp.features[0].geometry.coordinates);
+		console.log(temp.features[1].geometry.coordinates);
+		
+		//console.log(map.features.length);
+		//map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
+		
+		//do we want to use overlay or marker?
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          animation: google.maps.Animation.DROP,
+          title: 'Hello World!'
+        });
+      }
+      
+      
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
+    </script>
+  </body>
+</html>

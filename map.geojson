@@ -1,0 +1,33 @@
+ {
+  "type" : "FeatureCollection",
+  "features" : [
+    {
+      "type" : "Feature",
+      "geometry" : {
+        "type" : "Point",
+        "coordinates" : [
+          -84.50926612,
+          39.1423275
+        ]
+      },
+      "properties" : {
+        "name" : "<a href=\"/Things-To-Do/Attractions/cincinnati-zoo-botanical-garden\">Cincinnati Zoo &amp; Botanical Garden</a>",
+        "description" : ""
+      }
+    },
+    {
+      "type" : "Feature",
+      "geometry" : {
+        "type" : "Point",
+        "coordinates" : [
+          -84.495935481675,
+          39.095853705988
+        ]
+      },
+      "properties" : {
+        "name" : "<a href=\"/Things-To-Do/Attractions/bb-riverboats-thanksgiving-day-cruise\">BB Riverboats Thanksgiving Day Cruise</a>",
+        "description" : ""
+      }
+    }
+  ]
+}
