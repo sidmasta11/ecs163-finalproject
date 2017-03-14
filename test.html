@@ -4,7 +4,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Simple markers</title>
-    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     
     <style>
       #map {
@@ -22,6 +22,60 @@
     <div id="map"></div>
     <script>
 
+	
+//d3.json('meteorite_313.geojson', function(error, metData) {
+//  var features = metData.features;
+
+  // Update color scale domain based on data
+//  color.domain([0, d3.max(features, nameLength)]);
+
+  // Draw each province as a path
+//metData.features.forEach(function(d) {
+        
+  //    })
+	  
+	  
+
+//});
+
+
+
+d3.csv("meteorite.csv", function(error, metData) {
+	console.log(metData[0]['reclat'])
+	var data2 = [];
+	var OriginLatLng = new google.maps.LatLng({lat: 38.5449, lng: -121.7405});
+	
+	var d=metData[1]
+	
+	var myLatLng = new google.maps.LatLng({lat: +d['reclat'], lng: +d['reclong']});
+	console.log(myLatLng)
+	
+	var dist = 0;
+	var bearing = 0;
+	var revbearing = 0;
+	console.log("Before calc")
+	dist = google.maps.geometry.spherical.computeDistanceBetween(OriginLatLng, myLatLng);
+	bearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
+	revbearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
+	console.log("After calc")
+	console.log(dist)
+	console.log(bearing)
+	console.log(revbearing)
+	
+	
+	
+	
+	
+	//metData.forEach(function(d) {
+		
+		
+//	});
+	
+});
+
+	
+	
+	
       function initMap() {
         var myLatLng = {lat: -0, lng: 0};
 		var temp =     {
@@ -84,7 +138,7 @@
       
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap&libraries=geometry">
     </script>
   </body>
 </html>
