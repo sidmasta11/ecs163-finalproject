@@ -31,18 +31,21 @@
 
 </style>
 <body>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCayptOHNc__lBNXDceFPO-zojv3culgX0&libraries=geometry&sensor=false"
+  type="text/javascript"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-
 <script>
 //<button id="back" type="button" onclick="ToggleFunc(-1)">Toggle Logarithmic Scaling</button><p>
 //var data = d3.range(0.01, 2 * Math.PI, .001).map(function(t) {
   //return [t, Math.sin(2 * t) * Math.cos(2 * t)];
 //});
+var distMax = 5000
+var massLo = 10
+var massHi = 30000
+var timeStart = 1990
+var timeEnd = 2000
 
-
-
-
-var color = d3.scaleOrdinal(d3.schemeCategory20);
+var color = d3.scaleOrdinal(d3.schemeCategory10);
 var width = 960,
     height = 500,
     radius = Math.min(width, height) / 2 - 30;
@@ -50,13 +53,12 @@ var width = 960,
 var scaleIsLog = 1
 var r = d3.scaleLog()
 //var r = d3.scaleLinear()
-    .domain([10, 20000])
+    .domain([10, 5000])
     .range([0, radius]);
 
 var line = d3.radialLine()
     .radius(function(d) { return r(d[1]); })
     .angle(function(d) { return -d[0] + Math.PI / 2; });
-
 
 //svg.append("path")
 //    .datum(data)
@@ -67,18 +69,17 @@ function ToggleFunc(){
 	if (scaleIsLog == 1) {
 		scaleIsLog = 0
 		r = d3.scaleLinear()
-			.domain([10, 20000])
+			.domain([10, 5000])
 			.range([0, radius]);
 		
 	}
 	else if (scaleIsLog == 0) {
 		scaleIsLog = 1
 		r = d3.scaleLog()
-			.domain([10, 20000])
+			.domain([10, 5000])
 			.range([0, radius]);
 	}
 }
-
 
 	
 d3.csv("meteorite.csv", function(error, metData) {
@@ -137,16 +138,19 @@ ga.append("text")
 	var stateList = [];
 //	data.forEach(function(d){ 
 
-
 	var i
-	for (i = 1; i < 320.00; i ++) {   //capping loop to avoid 32k Api calls while testing.
+	for (i = 1; i < 19969; i ++) {   //capping loop to avoid 32k Api calls while testing.
 		var d=metData[i]
-	
-		var myLatLng = new google.maps.LatLng({lat: +d['reclat'], lng: +d['reclong']});
-		dist = google.maps.geometry.spherical.computeDistanceBetween(OriginLatLng, myLatLng);
-		bearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
-		data2 = data2.concat([[((450-bearing)*(Math.PI/180)), (dist/1000)]])
-
+		if (d['mass (g)'] <= massHi && d['mass (g)'] >= massLo && d['year'] <= timeEnd && d['year'] >= timeStart) {
+			
+			var myLatLng = new google.maps.LatLng({lat: +d['reclat'], lng: +d['reclong']});
+			dist = google.maps.geometry.spherical.computeDistanceBetween(OriginLatLng, myLatLng);
+			if (dist < 10000) {dist = 10000}
+			if (dist < distMax*1000) {
+					bearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
+					data2 = data2.concat([[((450-bearing)*(Math.PI/180)), (dist/1000), d['mass (g)'], d['recclass']]])
+			}
+		}
 	}
 	
 		svg.selectAll("point")
@@ -158,18 +162,29 @@ ga.append("text")
         var coors = line([d]).slice(1).slice(0, -1);
         return "translate(" + coors + ")"
       })
-      .attr("r", 8)
+      .attr("r", function(d) {
+		if (d[2] < 100) {return 2}
+		if (d[2] < 1000) {return 4}
+		if (d[2] < 10000) {return 8}
+		return 12
+	  })
       .attr("fill",function(d,i){
-        return color(i);
+		console.log(d[3])
+		console.log(d[3].charAt(0))
+		if (d[3].charAt(0) == 'A') {return color(1)}
+		if (d[3].charAt(0) == 'C') {return color(2)}
+		if (d[3].charAt(0) == 'D') {return color(3)}
+		if (d[3].charAt(0) == 'E') {return color(4)}
+		if (d[3].charAt(0) == 'H') {return color(5)}
+		if (d[3].charAt(0) == 'I') {return color(6)}
+		if (d[3].charAt(0) == 'L') {return color(7)}
+		if (d[3].charAt(0) == 'M') {return color(8)}
+		if (d[3].charAt(0) == 'R') {return color(9)}
+		return color(10)
       })
+	  .attr("stroke", "black")
 	  .append('title') // Tooltip
-        .text(function (d) { return  "Bearing: " +  (450-d[0]/(Math.PI/180)).toFixed(2) + " Distance: " + Math.round(d[1]) + "km" });
-
-
-	
-	
-	
-	
+        .text(function (d) { return  "Bearing: " +  (450-d[0]/(Math.PI/180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: "+ d[2]+"g, Class: " + d[3]});
 
 	//})
 
@@ -178,6 +193,4 @@ ga.append("text")
 	
 	
 </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&libraries=geometry">
-    </script>
+
