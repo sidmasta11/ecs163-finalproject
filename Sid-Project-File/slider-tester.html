@@ -38,7 +38,6 @@
     var start = new Date(1958, 01, 01),
         end = new Date(2013, 12, 31);
     var tickCount = d3.timeYear.count(start, end);
-    console.log(d3.timeYear.count(start, end));
 
     svg.append("g")
         .attr("class", "axis axis--grid")
@@ -46,25 +45,11 @@
         .call(d3.axisBottom(x)
             .ticks(tickCount)
             .tickSize(-height)
-            //.tickFormat(function() { return null; }))
             .tickFormat(d3.format("d")))
-        //.selectAll(".tick");
         .selectAll("text")
         .attr("x", 0)
         .style("font-size","8px");
-        //.classed("tick--minor", function(d) { console.log(d.getHours()); return d.getHours(); });
-    /*
-    svg.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x)
-            .ticks(tickCount)
-            .tickPadding(0))
-        .attr("text-anchor", null)
-        .selectAll("text")
-        .attr("x", 0)
-        .style("font-size","8px");
-    */
+
     svg.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
@@ -75,14 +60,12 @@
         if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
         var d0 = d3.event.selection.map(x.invert),
-            d1 = d0.map(d3.timeYear.round);
-
+            d1 = d0.map(Math.round);
         // If empty when rounded, use floor & ceil instead.
         if (d1[0] >= d1[1]) {
             d1[0] = d3.timeYear.floor(d0[0]);
             d1[1] = d3.timeYear.offset(d1[0]);
         }
-
         d3.select(this).transition().call(d3.event.target.move, d1.map(x));
     }
 
