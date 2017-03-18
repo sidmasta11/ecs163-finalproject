@@ -42,6 +42,13 @@
 	
 		
 		
+		function wait(ms){
+			var start = new Date().getTime();
+			var end = start;
+			while (end < start +ms){
+				end = new Date().getTime();
+			}
+		}
 		
 	    function initMap() {
 					// pre-processing loop
@@ -51,7 +58,7 @@
 				var arrayName = year[field1];
 				var meteoritesInThatYear = Number(year[field2]);
 				//console.log(meteoritesInThatYear);
-				var tempArray = new Array(meteoritesInThatYear);
+				var tempArray = [];
 
 				// add temp array to numOfYears Array
 				numOfYears[i] = tempArray;
@@ -74,33 +81,39 @@
 					//console.log(year);
 					var indexLocation = year - 1958;
 					//console.log(indexLocation);
-					var tempArray2 = new Array(3);
-					tempArray2.push(name);
-					tempArray2.push(reclat);
-					tempArray2.push(reclong);
+					var tempArray2 = [];
+					tempArray2[0] = name;
+					tempArray2[1] = reclat;
+					tempArray2[2] = reclong;
 					numOfYears[indexLocation].push(tempArray2);
 				});
 				//console.log(numOfYears[0]);
+				// go here
+				console.log(numOfYears[0].length);
+				var map = new google.maps.Map(document.getElementById('map'), {
+				  zoom: 3,
+				  center: {lat: 0, lng: 0}
+				});
+				//setTimeout(function(){alert("hi")}, 1000);
+					console.log("got here");
+					for(var k=0;k<numOfYears.length;k++){
+						for(var j =0;j<numOfYears[k].length;j++){
+							var marker2 = new google.maps.Marker({
+								position: {lat: numOfYears[k][j][1], lng: numOfYears[k][j][2]},
+								map: map,
+								animation: google.maps.Animation.DROP,
+								title:  numOfYears[k][j][0]
+							});					
+						}
+						wait(1000);
+					}						
+				
 			});
-			console.log(numOfYears);
-			
-			// initialize map
-			var myLatLng = {lat: 0, lng: 0};
-			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 3,
-				center: myLatLng
-			});
-			var marker = [];
-			var count = 0;
+
+			//numofyear master array, numofyears[index] = index+1958 meteorite data,
+					
 		});
-       
-		var myLatLng = {lat: 0, lng: 0};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
-          center: myLatLng
-        });
-        var marker = [];
-		var count = 0;
+
 		
 		//var test = map.data.addGeoJson('map.geojson');
 		//map.data.addGeoJson(data);
@@ -116,12 +129,12 @@
 		}*/
 		
 		
-        var marker2 = new google.maps.Marker({
+        /*var marker2 = new google.maps.Marker({
           position: myLatLng,
           map: map,
           animation: google.maps.Animation.DROP,
           title: 'Hello World!'
-        });
+        });*/
         
       }
       
