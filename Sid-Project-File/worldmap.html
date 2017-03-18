@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <title>Simple markers</title>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="meteorite.js"></script>
     <style>
       #map {
         height: 100%;
@@ -68,7 +67,7 @@
 					var year = Number(meteoriteData[newfield7]);
 					var reclat = Number(meteoriteData[newfield8]);
 					var reclong = Number(meteoriteData[newfield9]);
-					console.log(year);
+					//console.log(year);
 					var indexLocation = year - 1958;
 					//console.log(indexLocation);
 					var tempArray2 = new Array(3);
@@ -76,13 +75,10 @@
 					tempArray2.push(reclat);
 					tempArray2.push(reclong);
 					numOfYears[indexLocation].push(tempArray2);
-				});console.log(numOfYears[0]);
-			},function(error,data){
-				if(error)
-					throw error;
+				});
+				//console.log(numOfYears[0]);
 			});
-			
-		
+			console.log(numOfYears);
 		});
 		
 		
