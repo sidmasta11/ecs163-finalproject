@@ -31,6 +31,85 @@
         #floating-panel {
             margin-left: -52px;
         }
+        
+        
+        /*Style for radial overlay*/
+        <style>
+			.frame {
+			  fill: none;
+			  stroke: #000;
+			}
+
+			.axis text {
+			  fill: white;
+			  font: 12px sans-serif;
+
+			}
+
+			.axis line,
+			.axis circle {
+			  stroke: white;	
+			  fill: none;
+			  stroke: #777;
+			  stroke-dasharray: 1,4;
+			}
+
+			.axis :last-of-type circle {
+			  stroke: #333;
+			  stroke-dasharray: none;
+			}
+
+
+
+			 /* The Overlay (background) */
+			.overlay {
+				/* Height & width depends on how you want to reveal the overlay (see JS below) */   
+				height: 100%;
+				width: 0;
+				position: fixed; /* Stay in place */
+				z-index: 1; /* Sit on top */
+				left: 0;
+				top: 0;
+				background-color: rgb(0,0,0); /* Black fallback color */
+				background-color: rgba(0,0,0, 0.9); /* Black w/opacity */
+				overflow-x: hidden; /* Disable horizontal scroll */
+				transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+			}
+
+			/* Position the content inside the overlay */
+			.overlay-content {
+				position: relative;
+				top: 25%; /* 25% from the top */
+				width: 100%; /* 100% width */
+				text-align: center; /* Centered text/links */
+				margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+			}
+
+			/* The navigation links inside the overlay */
+			.overlay a {
+				padding: 8px;
+				text-decoration: none;
+				font-size: 36px;
+				color: #818181;
+				display: block; /* Display block instead of inline */
+				transition: 0.3s; /* Transition effects on hover (color) */
+			}
+
+			/* When you mouse over the navigation links, change their color */
+			.overlay a:hover, .overlay a:focus {
+				color: #f1f1f1;
+			}
+
+			/* Position the close button (top right corner) */
+			.overlay .closebtn {
+				position: absolute;
+				top: 20px;
+				right: 45px;
+				font-size: 60px;
+			}
+
+       
+        
     </style>
 </head>
 <body>
@@ -39,8 +118,16 @@
 </div>
 <div id="map"></div>
 <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-<script>
+<div id="RadialChart" class="overlay">
 
+  <!-- Button to close the overlay navigation -->
+  <a href="javascript:void(0)" class="closebtn" onclick="CloseRadial()">&times;</a>
+
+  <!-- Overlay content -->
+
+</div>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
     // If you're adding a number of markers, you may want to drop them on the map
     // consecutively rather than all at once. This example shows how to use
     // window.setTimeout() to space your markers' animation.
@@ -260,6 +347,12 @@
             center: {lat: 0, lng: 0},
             mapTypeId: 'hybrid'
         });
+			google.maps.event.addListener(map,"click",function(event){
+           OriginLat = event.latLng.lat();
+           OriginLon = event.latLng.lng();
+           
+           OpenRadial()
+       });
         drop();
     }
 
@@ -289,8 +382,176 @@
         markers = [];
     }
 </script>
+<script>
+
+
+
+
+/* Close when someone clicks on the "x" symbol inside the overlay */
+
+
+var OriginLat = 38.5449
+var OriginLon = -121.7405
+var distMax = 5000
+var massLo = 10
+var massHi = 30000
+var timeStart = 1990
+var timeEnd = 2000
+
+var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+var width = window.innerWidth || document.body.clientWidth,
+    height = window.innerHeight || document.body.clientHeight,
+    radius = Math.min(width, height) / 2 - 30;
+
+var scaleIsLog = 1
+var r = d3.scaleLog()
+//var r = d3.scaleLinear()
+    .domain([10, 5000])
+    .range([0, radius]);
+
+var line = d3.radialLine()
+    .radius(function(d) { return r(d[1]); })
+    .angle(function(d) { return -d[0] + Math.PI / 2; });
+
+	
+
+
+var svg = d3.select('#RadialChart').append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var gr = svg.append("g")
+    .attr("class", "r axis")
+    .style("color", "white")
+  .selectAll("g")
+    .data([10, 25, 50, 100, 250, 500, 1000, 2500, 5000])
+  .enter().append("g");
+
+console.log(r.ticks(2) + "  " + r.ticks(3))
+
+
+
+gr.append("text")
+    .attr("y", function(d) { return -r(d) - 4; })
+    .attr("transform", "rotate(0)")
+    .style("text-anchor", "middle")
+    .text(function(d) { return d; });
+
+var ga = svg.append("g")
+    .attr("class", "a axis")
+  .selectAll("g")
+    .data(d3.range(0, 360, 90))
+  .enter().append("g")
+    .attr("transform", function(d) { return "rotate(" + -d + ")"; });
+
+ga.append("line")
+    .attr("x2", radius);
+
+ga.append("text")
+    .attr("x", radius + 6)
+    .attr("dy", ".35em")
+    .style("text-anchor", function(d) { return d < 270 && d > 90 ? "end" : null; })
+    .attr("transform", function(d) { return d < 270 && d > 90 ? "rotate(180 " + (radius + 6) + ",0)" : null; })
+    .text(function(d) { if (d == 90) 
+							return "N"
+						else if (d==0)
+							return "E"
+						else if (d==180)
+							return "W" 
+						else if (d==270)
+							return "S" });
+
+
+
+		
+function MoveMap(lat, lon) {
+	OriginLat = lat
+	OriginLon = lon
+	CloseRadial()
+	map.panTo({lat:  +OriginLat , lng:  +OriginLon })
+	
+	
+}
+
+function CloseRadial() {
+    document.getElementById("RadialChart").style.width = "0%";
+}
+
+function OpenRadial() {
+	console.log("Overlay")
+	PopulateOverlay(OriginLat, OriginLon)
+    document.getElementById("RadialChart").style.width = "100%";
+}
+
+function PopulateOverlay(lat, lon) {
+	svg.selectAll("circle").remove()
+	gr.append("circle")
+    .attr("r", r);
+	OriginLat = lat
+	OriginLon = lon
+	d3.csv("meteorite.csv", function(error, metData) {
+		var data2 = [];
+		var OriginLatLng = new google.maps.LatLng({lat: +OriginLat, lng: +OriginLon});
+		var dist = 0;
+		var bearing = 0;
+		var i
+		for (i = 1; i < 19969; i ++) {   //capping loop to avoid 32k Api calls while testing.
+			var d=metData[i]
+			if (d['mass (g)'] <= massHi && d['mass (g)'] >= massLo && d['year'] <= timeEnd && d['year'] >= timeStart) {
+				
+				var myLatLng = new google.maps.LatLng({lat: +d['reclat'], lng: +d['reclong']});
+				dist = google.maps.geometry.spherical.computeDistanceBetween(OriginLatLng, myLatLng);
+				if (dist < 10000) {dist = 10000}
+				if (dist < distMax*1000) {
+						bearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
+						data2 = data2.concat([[((450-bearing)*(Math.PI/180)), (dist/1000), d['mass (g)'], d['recclass'], d['reclat'], d['reclong']]])
+				}
+			}
+		}
+		
+		svg.selectAll("point")
+		  .data(data2)
+		  .enter()
+		  .append("circle")
+		  .attr("class", "point")
+		  .attr("transform", function(d) {
+			var coors = line([d]).slice(1).slice(0, -1);
+			return "translate(" + coors + ")"
+		  })
+		  .attr("r", function(d) {
+			if (d[2] < 100) {return 2}
+			if (d[2] < 1000) {return 4}
+			if (d[2] < 10000) {return 8}
+			return 12
+		  })
+		  .attr("fill",function(d,i){
+			//console.log(d[3])
+			//console.log(d[3].charAt(0))
+			if (d[3].charAt(0) == 'A') {return color(1)}
+			if (d[3].charAt(0) == 'C') {return color(2)}
+			if (d[3].charAt(0) == 'D') {return color(3)}
+			if (d[3].charAt(0) == 'E') {return color(4)}
+			if (d[3].charAt(0) == 'H') {return color(5)}
+			if (d[3].charAt(0) == 'I') {return color(6)}
+			if (d[3].charAt(0) == 'L') {return color(7)}
+			if (d[3].charAt(0) == 'M') {return color(8)}
+			if (d[3].charAt(0) == 'R') {return color(9)}
+			return color(10)
+		  })
+		  .attr("stroke", "white")
+		  .on('click', function(d) {
+			MoveMap(d[4], d[5])})
+
+		  .append('title') // Tooltip
+			.text(function (d) { return  "Bearing: " +  (450-d[0]/(Math.PI/180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: "+ d[2]+"g, Class: " + d[3]})
+	});
+}
+</script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap&libraries=geometry">
 </script>
 </body>
 </html>
