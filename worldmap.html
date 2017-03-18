@@ -4,9 +4,8 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Simple markers</title>
-    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="meteorite.js"></script>
-    
     <style>
       #map {
         height: 100%;
@@ -22,6 +21,83 @@
   <body>
     <div id="map"></div>
     <script>
+		// file names
+		var file1 = "2DArraySize.csv";
+		var file2 = "USE_THIS_Meteorite_Landings.csv"
+		
+		// pre-processing
+		var numOfYears = new Array(56);
+		var field1 = "Year_only";
+		var field2 = "Count";
+		
+		var newfield1 = "name";
+		var newfield2 = "id";
+		var newfield3 = "nametype";
+		var newfield4 = "recclass";
+		var newfield5 = "mass";
+		var newfield6 = "fall";
+		var newfield7 = "year";
+		var newfield8 = "reclat";
+		var newfield9 = "reclong";
+	
+		
+		var i = 0;
+		// pre-processing loop
+		d3.csv(file1, function(yearData){
+			yearData.forEach(function(year){
+				var arrayName = year[field1];
+				var meteoritesInThatYear = Number(year[field2]);
+				//console.log(meteoritesInThatYear);
+				var tempArray = new Array(meteoritesInThatYear);
+
+				// add temp array to numOfYears Array
+				numOfYears[i] = tempArray;
+				i++;
+			});
+			// debugging - confirm blank array is loaded
+			console.log(numOfYears);
+			// read in csv into appropriate array
+			d3.csv(file2, function(data){
+				data.forEach(function(meteoriteData){
+					var name = meteoriteData[newfield1];
+					var id = Number(meteoriteData[newfield2]);
+					var nametype = meteoriteData[newfield3];
+					var recclass = meteoriteData[newfield4];
+					var mass = Number(meteoriteData[newfield5]);
+					var fall = meteoriteData[newfield6];
+					var year = Number(meteoriteData[newfield7]);
+					var reclat = Number(meteoriteData[newfield8]);
+					var reclong = Number(meteoriteData[newfield9]);
+					console.log(year);
+					var indexLocation = year - 1958;
+					//console.log(indexLocation);
+					var tempArray2 = new Array(3);
+					tempArray2.push(name);
+					tempArray2.push(reclat);
+					tempArray2.push(reclong);
+					numOfYears[indexLocation].push(tempArray2);
+				});console.log(numOfYears[0]);
+			},function(error,data){
+				if(error)
+					throw error;
+			});
+			
+		
+		});
+		
+		
+		/*
+		var countmet = 0;
+		var metArray = [];
+		for(var i = 0; i<56;i++){
+				for(var j = 0;j<count;j++){
+					metArray.push([i],data.features[countmet]);
+					countmet++;
+				}
+		}
+		
+		*/
+		/*
       function initMap() {
         var myLatLng = {lat: -0, lng: 0};
 		
@@ -29,29 +105,44 @@
           zoom: 3,
           center: myLatLng
         });
-        
+        var marker = [];
+		var count = 0;
 		//var test = map.data.addGeoJson('map.geojson');
 		//map.data.addGeoJson(data);
 		
-		var yearcount = 1958;
+		
+		var year = 1958;
+		function countmeteorite(year,count){
+			setTimeout(function(){
+			console.log("got here");
+			console.log(count);
+			for(var i=count; i<count+10; i++){
+				if(count>= data.features.length)
+					break;
+				//console.log("got here");
+				var parsedate = new Date(data.features[i].properties.year);
+				//if(parsedate.getFullYear() == year){
+        var marker2 = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          animation: google.maps.Animation.DROP,
+          title: 'Hello World!'
+        });
+				count++;
+				//}
+			}}, 5000);
+		}
 		//console.log(map.features.length);
 		//map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-		for(var i=0; i<data.features.length; i++){
-				var count = 0;
-				var parsedate = new Date(data.features[i].properties.year);
-				if(parsedate.getFullYear() == yearcount){
-							  marker[count] = new google.maps.Marker({
-							  map: map,
-							  animation: google.maps.Animation.DROP,
-							  position: {lat: data.features[i].geometry.coordinates[0], lng: data.features[i].geometry.coordinates[1]},      
-							});
-							count++;
-				}
-				else
-					continue;
-			}
+		/*for(var year = 1958;year<=2013;year ++){
+			console.log("in year loop");
+			countmeteorite(year,count);
+			count = count+10;
+		}*/
+		
 		//do we want to use overlay or marker?
-        var marker = new google.maps.Marker({
+		/*
+        var marker2 = new google.maps.Marker({
           position: myLatLng,
           map: map,
           animation: google.maps.Animation.DROP,
@@ -59,10 +150,10 @@
         });
       }
       
-      
+      */
     </script>
-    <script async defer
+    <!--<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
-    </script>
+    </script>-->
   </body>
 </html>
