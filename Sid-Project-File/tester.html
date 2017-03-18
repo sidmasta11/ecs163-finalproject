@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Marker animations with <code>setTimeout()</code></title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #floating-panel {
+            position: absolute;
+            top: 10px;
+            left: 25%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: 'Roboto','sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
+        }
+        #floating-panel {
+            margin-left: -52px;
+        }
+    </style>
+</head>
+<body>
+<div id="floating-panel">
+    <button id="drop" onclick="drop()">Drop Markers</button>
+</div>
+<div id="map"></div>
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+<script>
+
+    // If you're adding a number of markers, you may want to drop them on the map
+    // consecutively rather than all at once. This example shows how to use
+    // window.setTimeout() to space your markers' animation.
+//posit
+    var meteoritesCoord = [
+        {lat:  25.1 , lng:  107.7 },
+        {lat:  44.05 , lng:  126.16667 },
+        {lat:  24.2 , lng:  113.4 },
+        {lat:  36.3 , lng:  120.48333 },
+        {lat:  27.5 , lng:  -12.5 },
+        {lat:  34.46667 , lng:  -115.23333 },
+        {lat:  26.96667 , lng:  -105.31667 },
+        {lat:  24.23333 , lng:  111.18333 },
+        {lat:  -14.258 , lng:  -49.15917 },
+        {lat:  22.01833 , lng:  26.08778 },
+        {lat:  48.7 , lng:  45.7 },
+        {lat:  20.6 , lng:  44.88333 },
+        {lat:  42.25 , lng:  59.2 },
+        {lat:  44.43333 , lng:  87.63333 },
+        {lat:  67.3 , lng:  160.8 },
+        {lat:  68 , lng:  128.3 },
+        {lat:  29.85861 , lng:  -2.645 },
+        {lat:  19.7 , lng:  55.73333 },
+        {lat:  -28.23333 , lng:  120.85 },
+        {lat:  -6.6 , lng:  110.73333 },
+        {lat:  48.48333 , lng:  3.58333 },
+        {lat:  35.98333 , lng:  -101.9 },
+        {lat:  20.51667 , lng:  56.66667 },
+        {lat:  -76.71667 , lng:  159.66667 },
+        {lat:  49.55 , lng:  4.86667 },
+        {lat:  27.35 , lng:  108.5 },
+        {lat:  -26.45 , lng:  120.36667 },
+        {lat:  53.66667 , lng:  55.98333 },
+        {lat:  62.9 , lng:  152.43333 },
+        {lat:  -29.43333 , lng:  -50.91667 },
+        {lat:  53.9 , lng:  -112.88333 },
+        {lat:  3.98333 , lng:  41.65 },
+        {lat:  34.3 , lng:  -103.13472 },
+        {lat:  -39.85 , lng:  -69.48333 },
+        {lat:  -16.21667 , lng:  -50.3 },
+        {lat:  -25.66667 , lng:  118.1 },
+        {lat:  45.3 , lng:  0.23333 },
+        {lat:  -27.83333 , lng:  150.33333 },
+        {lat:  34.25 , lng:  -96.68333 },
+        {lat:  31.61667 , lng:  113.46667 },
+        {lat:  19.03333 , lng:  54.51667 },
+        {lat:  64.02 , lng:  161.80833 },
+        {lat:  23.28333 , lng:  -10.81667 },
+        {lat:  26.06 , lng:  118.01 },
+        {lat:  29.31667 , lng:  -100.96667 },
+        {lat:  40.5 , lng:  112.5 },
+        {lat:  19.65167 , lng:  55.69 },
+        {lat:  -30.03306 , lng:  -51.23 },
+        {lat:  49.86667 , lng:  46.61167 },
+        {lat:  27.33333 , lng:  -9.33333 },
+        {lat:  41.2 , lng:  -103.68333 },
+        {lat:  -28.86667 , lng:  -60.2 },
+        {lat:  43.75 , lng:  92.91667 },
+        {lat:  38.93333 , lng:  48.25 },
+        {lat:  -26.59278 , lng:  120.32833 },
+        {lat:  1.06667 , lng:  34.16667 },
+        {lat:  29.47 , lng:  -105.8 },
+        {lat:  27.95833 , lng:  21.68333 },
+        {lat:  -44.53333 , lng:  -70.36667 },
+        {lat:  -25.2 , lng:  18.08333 },
+        {lat:  41.15333 , lng:  -96.955 },
+        {lat:  -80.06667 , lng:  156.38333 },
+        {lat:  35.16667 , lng:  -98.64389 },
+        {lat:  55.14167 , lng:  48.2 },
+        {lat:  45.5 , lng:  119.03333 },
+        {lat:  18.16667 , lng:  54.16667 },
+        {lat:  19.69362 , lng:  56.65432 },
+        {lat:  24.5 , lng:  -106 },
+        {lat:  20.76333 , lng:  10.44167 },
+        {lat:  29.8 , lng:  -107.55 },
+        {lat:  32.5225 , lng:  -102.705 },
+        {lat:  -18.5 , lng:  16 },
+        {lat:  -84.26223 , lng:  161.41628 },
+        {lat:  18.7 , lng:  4.8 },
+        {lat:  12.66667 , lng:  78.03333 },
+        {lat:  28.11667 , lng:  0.53333 },
+        {lat:  -30.33333 , lng:  130.53333 },
+        {lat:  50.56667 , lng:  114.9 },
+        {lat:  39.61667 , lng:  -94.86667 },
+        {lat:  -36.61667 , lng:  145.2 },
+        {lat:  39.45889 , lng:  -4.3775 },
+        {lat:  66.9 , lng:  164.2 },
+        {lat:  31.2 , lng:  112.5 },
+        {lat:  14 , lng:  28 },
+        {lat:  11.49167 , lng:  11.65833 },
+        {lat:  -30.61667 , lng:  130.41667 },
+        {lat:  35.5 , lng:  115.41667 },
+        {lat:  31.98457 , lng:  -5.51528 },
+        {lat:  34.71637 , lng:  -114.22197 },
+        {lat:  23.69639 , lng:  -5.01472 },
+        {lat:  31.16333 , lng:  -7.015 },
+        {lat:  31.15643 , lng:  -5.15262 },
+        {lat:  54.81667 , lng:  61.11667 },
+        {lat:  27.30167 , lng:  15.7645 },
+        {lat:  -15.21222 , lng:  35.24222 },
+        {lat:  -30.5 , lng:  131.55 },
+        {lat:  19.71678 , lng:  56.6062 },
+        {lat:  19.83333 , lng:  51.25 },
+        {lat:  36.23 , lng:  -104.11889 },
+        {lat:  39.26333 , lng:  31.78 }
+    ];
+
+    var names = [
+        "Nantan",
+        "Jilin",
+        "Yingde",
+        "Xifu",
+        "Al Haggounia 001",
+        "Old Woman",
+        "Allende",
+        "Zhaoping",
+        "Campinorte",
+        "Gebel Kamil",
+        "Tsarev",
+        "Alkhamasin",
+        "Kunya-Urgench",
+        "Fukang",
+        "Bilibino",
+        "Zhigansk",
+        "Zerhamra",
+        "Jiddat al Harasis 073",
+        "Wildara",
+        "Jepara",
+        "Saint-Aubin",
+        "Etter",
+        "Sayh al Uhaymir 001",
+        "Allan Hills A76009",
+        "Mont Dieu",
+        "Longtian",
+        "Millbillillie",
+        "Sterlitamak",
+        "Seymchan",
+        "Nova Petropolis",
+        "Bruderheim",
+        "Bur-Abor",
+        "Clovis (no. 1)",
+        "Rio Limay",
+        "Sanclerlandia",
+        "Mount Padbury",
+        "Saint-SÕ©verin",
+        "Miles",
+        "Tishomingo",
+        "Suizhou",
+        "Dhofar 020",
+        "Omolon",
+        "El Hammami",
+        "Youxi",
+        "AcuÕ±a",
+        "Liangcheng",
+        "Jiddat al Harasis 055",
+        "Porto Alegre",
+        "Pallasovka",
+        "Zag",
+        "Owasco",
+        "Garabato",
+        "Qijiaojing",
+        "Yardymly",
+        "Wiluna",
+        "Mbale",
+        "Tres Castillos",
+        "Jalu",
+        "El Sampal",
+        "Korra Korrabes",
+        "Brainard",
+        "Derrick Peak A78009",
+        "Carnegie",
+        "Araslanovo",
+        "Dong Ujimqin Qi",
+        "Dhofar 005",
+        "Jiddat al Harasis 091",
+        "Santiago Papasquiero",
+        "Tafassasset",
+        "Buenaventura",
+        "Florey",
+        "Etosha",
+        "Lewis Cliff 85320",
+        "Mount Tazerzait",
+        "Sulagiri",
+        "Tiberrhamine",
+        "Cook 001",
+        "Budulan",
+        "Faucett",
+        "Murchison",
+        "Retuerta del Bullaque",
+        "Anyujskij",
+        "Zhongxiang",
+        "Kidairat",
+        "Gujba",
+        "Cook 007",
+        "Juancheng",
+        "Agoudal",
+        "Franconia",
+        "Chergach ",
+        "Tamdakht",
+        "Bou Azarif",
+        "Chelyabinsk",
+        "Dar al Gani 749",
+        "Machinga",
+        "Watson 001",
+        "Jiddat al Harasis 090",
+        "ad-Dahbubah",
+        "Mills",
+        "Kayakent"
+    ];
+
+    var markers = [];
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 3,
+            center: {lat: 0, lng: 0},
+            mapTypeId: 'hybrid'
+        });
+        drop();
+    }
+
+    function drop() {
+        clearMarkers();
+        for (var i = 0; i < meteoritesCoord.length; i++) {
+            addMarkerWithTimeout(meteoritesCoord[i], i * 100, names[i]);
+        }
+    }
+
+    function addMarkerWithTimeout(position, timeout, name) {
+        window.setTimeout(function() {
+            markers.push(new google.maps.Marker({
+                position: position,
+                map: map,
+                icon: "asteroid.png",
+                animation: google.maps.Animation.DROP,
+                title: name
+            }));
+        }, timeout);
+    }
+
+    function clearMarkers() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
+</script>
+</body>
+</html>

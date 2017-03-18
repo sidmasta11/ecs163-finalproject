@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-  <meta charset="utf-8">
-  <title>Simple markers</title>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="meteorite.js"></script>
-  <style>
-    #map {
-      height: 100%;
-    }
-    /* Optional: Makes the sample page fill the window. */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Simple markers</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="meteorite.js"></script>
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
 </head>
 <body>
 <div id="map"></div>
 <script>
     // file names
-    var file1 = "2DArraySize.csv";
-    var file2 = "USE_THIS_Meteorite_Landings.csv"
+    var file1 = "USE_THIS_Meteorite_Landings_MassFilter.csv";
 
     // pre-processing
-    var numOfYears = new Array(56);
-    var field1 = "Year_only";
-    var field2 = "Count";
-
+    var biggest = [];
     var newfield1 = "name";
     var newfield2 = "id";
     var newfield3 = "nametype";
@@ -39,109 +36,82 @@
     var newfield7 = "year";
     var newfield8 = "reclat";
     var newfield9 = "reclong";
+    var markers = [];
 
-
-
-    function wait(ms){
-        var start = new Date().getTime();
-        var end = start;
-        while (end < start +ms){
-            end = new Date().getTime();
-        }
+    function addmarker(position, t,timeout){
+        window.setTimeout(function() {
+            //console.log("in here");
+            markers.push(new google.maps.Marker({
+                position: position,
+                setMap: map,
+                animation: google.maps.Animation.DROP,
+                title: t
+            }));
+        },1000);
+        //console.log("end of addmarker");
     }
-
     function initMap() {
         // pre-processing loop
         var i = 0;
-        d3.csv(file1, function(yearData){
-            yearData.forEach(function(year){
-                var arrayName = year[field1];
-                var meteoritesInThatYear = Number(year[field2]);
-                //console.log(meteoritesInThatYear);
-                var tempArray = [];
+        d3.csv(file1, function (data) {
+            data.forEach(function (meteoriteData) {
+                var name = meteoriteData[newfield1];
+                var id = Number(meteoriteData[newfield2]);
+                var nametype = meteoriteData[newfield3];
+                var recclass = meteoriteData[newfield4];
+                var mass = Number(meteoriteData[newfield5]);
+                var fall = meteoriteData[newfield6];
+                var year = Number(meteoriteData[newfield7]);
+                var reclat = Number(meteoriteData[newfield8]);
+                var reclong = Number(meteoriteData[newfield9]);
 
-                // add temp array to numOfYears Array
-                numOfYears[i] = tempArray;
-                i++;
-            });
-            // debugging - confirm blank array is loaded
-            //console.log(numOfYears);
-            // read in csv into appropriate array
-            d3.csv(file2, function(data){
-                data.forEach(function(meteoriteData){
-                    var name = meteoriteData[newfield1];
-                    var id = Number(meteoriteData[newfield2]);
-                    var nametype = meteoriteData[newfield3];
-                    var recclass = meteoriteData[newfield4];
-                    var mass = Number(meteoriteData[newfield5]);
-                    var fall = meteoriteData[newfield6];
-                    var year = Number(meteoriteData[newfield7]);
-                    var reclat = Number(meteoriteData[newfield8]);
-                    var reclong = Number(meteoriteData[newfield9]);
-                    //console.log(year);
-                    var indexLocation = year - 1958;
-                    //console.log(indexLocation);
-                    var tempArray2 = [];
-                    tempArray2[0] = name;
-                    tempArray2[1] = reclat;
-                    tempArray2[2] = reclong;
-                    numOfYears[indexLocation].push(tempArray2);
-                });
-                //console.log(numOfYears[0]);
-                // go here
-                console.log(numOfYears[0].length);
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 3,
-                    center: {lat: 0, lng: 0}
-                });
-                //setTimeout(function(){alert("hi")}, 1000);
-                console.log("got here");
-                for(var k=0;k<numOfYears.length;k++){
-                    for(var j =0;j<numOfYears[k].length;j++){
-                        var marker2 = new google.maps.Marker({
-                            position: {lat: numOfYears[k][j][1], lng: numOfYears[k][j][2]},
-                            map: map,
-                            animation: google.maps.Animation.DROP,
-                            title:  numOfYears[k][j][0]
-                        });
-                    }
-                    wait(1000);
-                }
-
+                var tempArray2 = [];
+                tempArray2[0] = name;
+                tempArray2[1] = reclat;
+                tempArray2[2] = reclong;
+                //{lat: 52.511, lng: 13.447}
+                console.log("{lat: ", reclat, ", lng: ", reclong, "}");
+                biggest.push(tempArray2);
             });
 
-            //numofyear master array, numofyears[index] = index+1958 meteorite data,
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 3,
+                center: {lat: 0, lng: 0}
+            });
 
+            var maxLength = biggest.length;
+            //console.log(biggest[0][1]);
+            // plot markers on map
+            for (var k = 0; k < maxLength; k++) {
+                //console.log(k);
+                var position = {lat: biggest[k][1], lng: biggest[k][2]};
+                //console.log(biggest[k]);
+                var scopeVar = biggest[k];
+                window.setTimeout(function(scopeVar) {
+                    //console.log(position);
+                    markers.push(new google.maps.Marker({
+                        position: position,
+                        setMap: map,
+                        animation: google.maps.Animation.DROP
+                        //title: scopeVar[0]
+                    }));
+                },1000);
+                //console.log("after addmarker");
+            }
+            //console.log(markers.length);
         });
-
-
-        //var test = map.data.addGeoJson('map.geojson');
-        //map.data.addGeoJson(data);
-
-
-
-        //console.log(map.features.length);
-        //map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-      /*for(var year = 1958;year<=2013;year ++){
-       console.log("in year loop");
-       countmeteorite(year,count);
-       count = count+10;
-       }*/
-
-
-      /*var marker2 = new google.maps.Marker({
-       position: myLatLng,
-       map: map,
-       animation: google.maps.Animation.DROP,
-       title: 'Hello World!'
-       });*/
-
+        for (var k = 0; k < biggest.length; k++) {
+            //console.log(k);
+            var position = {lat: biggest[k][1], lng: biggest[k][2]};
+            addmarker(position,biggest[k][0],400);
+        }
     }
 
 
 </script>
-<<script async defer
-         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_5nzRzli7BUXYEw-cewiS1T8PJOC7o0k&callback=initMap">
 </script>
 </body>
 </html>
