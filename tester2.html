@@ -125,10 +125,11 @@
     </style>
 </head>
 <body>
-<div id="floating-panel" style="margin-top: 50px">
-    <button id="drop" onclick="drop()">Drop Markers</button>
+<div id="floating-panel">
+    <button id="drop" onclick=" dropWithoutAnimation()">Drop Markers</button>
 </div>
-<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 50px"></div>
+<div id="map"></div>
+<div id="TimeBar" class="overlay">
 <div id="RadialChart" class="overlay">
 
     <!-- Button to close the overlay navigation -->
@@ -150,30 +151,9 @@
     var markers = [];
     var map;
     var massHiMain = 91000000
-    var massLoMain = 100000
-    var AniStartYear = 1958
-    var AniEndYear = 2020
-    
-    
-	function dropWithoutAnimation() {
-		clearMarkers();
-		var meteoritesCoord = [];
-		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
-			var i;
-            for (i = 0; i < 19969; i++) {
-                var d = metData3[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {//capping loop to avoid 32k Api calls while testing.
-
-                    meteoritesCoord.push({lat: +d['reclat'], lng: +d['reclong']})
-                    names.push(d['name'])
-                }
-            }
-		
-			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i], 0, names[i]);
-			}
-		})
-	}
+	var massLoMain = 100000
+	var AniStartYear = 1958
+	var AniEndYear = 2020
 
     function initMap() {
         d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData2) {
@@ -212,6 +192,27 @@
             addMarkerWithTimeout(meteoritesCoord[i], i * 100, names[i]);
         }
     }
+
+	function dropWithoutAnimation() {
+		clearMarkers();
+		AniStartYear = AniStartYear + 10
+		var meteoritesCoord = [];
+		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
+			var i;
+            for (i = 0; i < 19969; i++) {
+                var d = metData3[i];
+                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {//capping loop to avoid 32k Api calls while testing.
+
+                    meteoritesCoord.push({lat: +d['reclat'], lng: +d['reclong']})
+                    names.push(d['name'])
+                }
+            }
+		
+			for (var i = 0; i < meteoritesCoord.length; i++) {
+				addMarkerWithTimeout(meteoritesCoord[i], 0, names[i]);
+			}
+		})
+	}
 
     function addMarkerWithTimeout(position, timeout, name) {
         window.setTimeout(function () {
@@ -323,10 +324,10 @@
 
 
     function MoveMap(lat, lon) {
-        OriginLat = lat;
-        OriginLon = lon;
-        CloseRadial();
-        map.panTo({lat: +OriginLat, lng: +OriginLon});
+        OriginLat = lat
+        OriginLon = lon
+        CloseRadial()
+        map.panTo({lat: +OriginLat, lng: +OriginLon})
 
 
     }
@@ -336,8 +337,8 @@
     }
 
     function OpenRadial() {
-        console.log("Overlay");
-        PopulateOverlay(OriginLat, OriginLon);
+        console.log("Overlay")
+        PopulateOverlay(OriginLat, OriginLon)
         document.getElementById("RadialChart").style.width = "100%";
     }
 
@@ -438,19 +439,19 @@
 
 <script>
     // Slider script
-    var margin = {top: 10, right: 50, bottom: 20, left: 50},
-        width = (window.innerWidth || document.body.clientWidth) - margin.left - margin.right,
-        height = 100 - margin.top - margin.bottom;
+    var margin = {top: 200, right: 0, bottom: 200, left: 20},
+        width2 = 1220 - margin.left - margin.right,
+        height2 = 500 - margin.top - margin.bottom;
 
     var x = d3.scaleLinear()
         .domain([1958, 2013])
-        .rangeRound([0, width-10]);
+        .rangeRound([0, width2-10]);
 
-    var svg2 = d3.select("body").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg2 = d3.select('#TimeBar').append("svg")
+        .attr("width", width2 + margin.left + margin.right)
+        .attr("height", height2 + margin.top + margin.bottom)
+        .insert("g")
+//        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var start = new Date(1958, 01, 01),
         end = new Date(2013, 12, 31);
@@ -458,20 +459,19 @@
 
     svg2.append("g")
         .attr("class", "axis axis--grid")
-        .attr("transform", "translate(0," + height + ")")
+        //.attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x)
             .ticks(tickCount)
-            .tickSize(-height)
+            .tickSize(-height2)
             .tickFormat(d3.format("d")))
         .selectAll("text")
         .attr("x", 0)
-        .style("font-size","8px")
-        .style('fill', 'darkOrange');
+        .style("font-size","8px");
 
     svg2.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
-            .extent([[0, 0], [width, height]])
+            .extent([[0, 0], [width2, height2]])
             .on("end", brushended));
 
     function brushended() {
@@ -485,13 +485,6 @@
             d1[1] = d3.timeYear.offset(d1[0]);
         }
         d3.select(this).transition().call(d3.event.target.move, d1.map(x));
-		
-		AniStartYear = d1[0]
-        AniEndYear = d1[1]
-        dropWithoutAnimation()
-        
-        
-        
     }
 
 </script>
