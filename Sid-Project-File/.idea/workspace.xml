@@ -31,8 +31,8 @@
       <file leaf-file-name="tester.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tester.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="16" column="9" lean-forward="true" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+            <state relative-caret-position="302">
+              <caret line="444" column="26" lean-forward="false" selection-start-line="444" selection-start-column="26" selection-end-line="444" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -41,8 +41,8 @@
       <file leaf-file-name="slider-tester.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/slider-tester.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="632">
-              <caret line="69" column="5" lean-forward="true" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
+            <state relative-caret-position="225">
+              <caret line="15" column="27" lean-forward="true" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -61,6 +61,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>console.log</find>
+      <find>.csv</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -69,8 +70,8 @@
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/worldmap.html" />
         <option value="$PROJECT_DIR$/Arrays.js" />
-        <option value="$PROJECT_DIR$/tester.html" />
         <option value="$PROJECT_DIR$/slider-tester.html" />
+        <option value="$PROJECT_DIR$/tester.html" />
       </list>
     </option>
   </component>
@@ -219,12 +220,12 @@
       <workItem from="1489806562831" duration="28000" />
       <workItem from="1489806627753" duration="8096000" />
       <workItem from="1489868527316" duration="1390000" />
-      <workItem from="1489870921762" duration="5103000" />
+      <workItem from="1489870921762" duration="6107000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18862000" />
+    <option name="totallyTimeSpent" value="19866000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -351,16 +352,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tester.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="16" column="9" lean-forward="true" selection-start-line="16" selection-start-column="9" selection-end-line="16" selection-end-column="9" />
+        <state relative-caret-position="302">
+          <caret line="444" column="26" lean-forward="false" selection-start-line="444" selection-start-column="26" selection-end-line="444" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/slider-tester.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="632">
-          <caret line="69" column="5" lean-forward="true" selection-start-line="69" selection-start-column="5" selection-end-line="69" selection-end-column="5" />
+        <state relative-caret-position="225">
+          <caret line="15" column="27" lean-forward="true" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
           <folding />
         </state>
       </provider>
