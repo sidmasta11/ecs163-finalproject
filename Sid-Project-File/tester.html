@@ -125,10 +125,10 @@
     </style>
 </head>
 <body>
-<div id="floating-panel">
+<div id="floating-panel" style="margin-top: 50px">
     <button id="drop" onclick="drop()">Drop Markers</button>
 </div>
-<div id="map"></div>
+<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 50px"></div>
 <div id="RadialChart" class="overlay">
 
     <!-- Button to close the overlay navigation -->
@@ -302,10 +302,10 @@
 
 
     function MoveMap(lat, lon) {
-        OriginLat = lat
-        OriginLon = lon
-        CloseRadial()
-        map.panTo({lat: +OriginLat, lng: +OriginLon})
+        OriginLat = lat;
+        OriginLon = lon;
+        CloseRadial();
+        map.panTo({lat: +OriginLat, lng: +OriginLon});
 
 
     }
@@ -315,8 +315,8 @@
     }
 
     function OpenRadial() {
-        console.log("Overlay")
-        PopulateOverlay(OriginLat, OriginLon)
+        console.log("Overlay");
+        PopulateOverlay(OriginLat, OriginLon);
         document.getElementById("RadialChart").style.width = "100%";
     }
 
@@ -417,15 +417,15 @@
 
 <script>
     // Slider script
-    var margin = {top: 200, right: 0, bottom: 200, left: 20},
-        width = 1220 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    var margin = {top: 10, right: 50, bottom: 20, left: 50},
+        width = 1449 - margin.left - margin.right,
+        height = 100 - margin.top - margin.bottom;
 
     var x = d3.scaleLinear()
         .domain([1958, 2013])
         .rangeRound([0, width-10]);
 
-    var svg = d3.select("body").append("svg")
+    var svg2 = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -435,7 +435,7 @@
         end = new Date(2013, 12, 31);
     var tickCount = d3.timeYear.count(start, end);
 
-    svg.append("g")
+    svg2.append("g")
         .attr("class", "axis axis--grid")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x)
@@ -444,9 +444,10 @@
             .tickFormat(d3.format("d")))
         .selectAll("text")
         .attr("x", 0)
-        .style("font-size","8px");
+        .style("font-size","8px")
+        .style('fill', 'darkOrange');
 
-    svg.append("g")
+    svg2.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
             .extent([[0, 0], [width, height]])

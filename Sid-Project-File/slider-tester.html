@@ -48,7 +48,8 @@
             .tickFormat(d3.format("d")))
         .selectAll("text")
         .attr("x", 0)
-        .style("font-size","8px");
+        .style("font-size","8px")
+        .style('fill', 'black');
 
     svg.append("g")
         .attr("class", "brush")
