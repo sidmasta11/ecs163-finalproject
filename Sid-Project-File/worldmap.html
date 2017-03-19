@@ -228,7 +228,7 @@
     function drop() {
         clearMarkers();
         for (var i = 0; i < meteoritesCoord.length; i++) {
-            addMarkerWithTimeout(meteoritesCoord[i][0], i * 100, meteoritesCoord[i][1], meteoritesCoord[i][3]);
+            addMarkerWithTimeout(meteoritesCoord[i][0], i * 100 +1, meteoritesCoord[i][1], meteoritesCoord[i][3]);
         }
     }
 
@@ -241,7 +241,10 @@
                 animation: google.maps.Animation.DROP,
                 title: name
             }));
-            document.getElementById("yearLabel").innerHTML = year;
+            if (timeout > 0 ) 
+				document.getElementById("yearLabel").innerHTML = year;
+			else 
+				document.getElementById("yearLabel").innerHTML = AniStartYear + " - " +AniEndYear;
         }, timeout);
     }
 
