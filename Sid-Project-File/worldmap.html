@@ -178,7 +178,7 @@
 <div id="floating-panel" style="margin-top: 50px">
    <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
-<div id="yearLabel" style="margin-top: 10px">TEXT</div>
+<div id="yearLabel" style="margin-top: 10px">YEAR</div>
 <div id="geocoderBox">
     <form action="javascript:getLatLong(document.getElementById('locationString').value)">
     Location: <input type="text" name="locationString" id="locationString"><br>
@@ -626,7 +626,7 @@
             }
             //console.log(result);
             map.panTo({lat: result[0], lng: result[1]});
-            var zoomLevel = 8;
+            var zoomLevel = 12;
             map.setZoom(zoomLevel);
             var visibleMarkers = 0;
 
