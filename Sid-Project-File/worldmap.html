@@ -22,8 +22,8 @@
 
         #floating-panel {
             position: absolute;
-            top: 5%;
-            right: 10%;
+            top: 8%;
+            left: 87%;
             z-index: 5;
             background-color: #fff;
             text-align: center;
@@ -89,8 +89,9 @@
             left: 0;
             top: 0;
             background-color: rgb(0,0,0); /* Black fallback color */
-            background-color: rgba(0,0,0, 0.6); /* Black w/opacity */
+            background-color: rgba(0,0,0, 0.77); /* Black w/opacity */
             overflow-x: hidden; /* Disable horizontal scroll */
+			overflow-y: hidden; /* Disable horizontal scroll */
             transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
         }
 
@@ -98,9 +99,9 @@
         .overlay-content {
             position: relative;
             top: 25%; /* 25% from the top */
-            width: 100%; /* 100% width */
+            width: 75%; /* 100% width */
             text-align: center; /* Centered text/links */
-            margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+            margin-top: 10px; /* 30px top margin to avoid conflict with the close button on smaller screens */
         }
 
         /* The navigation links inside the overlay */
@@ -129,7 +130,7 @@
 		#yearLabel {
            position: absolute;
            top: 7%;
-           right: 10%;
+           left: 85%;
            background-color: #fec12d;
            text-align: center;
            font-family: 'Roboto','sans-serif';
@@ -141,8 +142,14 @@
 
         #geocoderBox{
             position: absolute;
-            top: 18%;
-            right:2%;
+            top: 21%;
+            left:81%;
+        }
+		
+		#MSelect{
+            position: absolute;
+            top: 28%;
+            left:81%;
         }
 
         img.center {
@@ -185,7 +192,8 @@
     <input type="submit" value="Submit">
     </form>
 </div>
-<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 300px"></div>
+<div id="MSelect"><br>Mass Threshold Selection:</div>
+<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 20%"></div>
 <div id="RadialChart" class="overlay">
 
     <!-- Button to close the overlay navigation -->
@@ -207,7 +215,7 @@
     var markers = [];
     var map;
     var massHiMain = 1000000000;
-    var massLoMain = 10000;
+    var massLoMain = 100000;
     var AniStartYear = 1958;
     var AniEndYear = 2020;
     
@@ -319,8 +327,7 @@
             }));
             if (timeout > 0 ) 
 				document.getElementById("yearLabel").innerHTML = year;
-			else 
-				document.getElementById("yearLabel").innerHTML = AniStartYear + " - " +AniEndYear;
+
         }, timeout);
     }
 
@@ -337,22 +344,22 @@
 
     var OriginLat = 38.5449
     var OriginLon = -121.7405
-    var distMax = 5000
+    var distMax = 2500
     var massLo = 10
-    var massHi = 30000
+    var massHi = 30000000
     var timeStart = 1990
     var timeEnd = 2000
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    var width = window.innerWidth,
+    var width = window.innerWidth*.8,
         height = window.innerHeight*.8,
         radius = Math.min(width, height) / 2 - 30;
 
     var scaleIsLog = 1
-    //var r = d3.scaleLog()
-    var r = d3.scaleLinear()
-        .domain([10, 5000])
+    var r = d3.scaleLog()
+    //var r = d3.scaleLinear()
+        .domain([10, 2500])
         .range([0, radius]);
 
     var line = d3.radialLine()
@@ -367,14 +374,36 @@
     var svg = d3.select('#RadialChart').append("svg")
         .attr("width", width)
         .attr("height", height)
+		.style("color", "white")
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
+		
+	svg.append("text")
+		.attr("x", -width/2+10)
+		.attr("y", -height/2+85)
+		.style("fill", "white")
+		.style("color", "white")
+		.style("font-size","28px")
+		.text("Radial Proximity Map")
+	svg.append("text")
+		.attr("x", -width/2+10)
+		.attr("y", -height/2+107)
+		.style("fill", "white")
+		.style("color", "white")
+		.style("font-size","20px")
+		.text("Logarithmic Scale")
+	svg.append("text")
+		.attr("x", -width/2+10)
+		.attr("y", -height/2+125)
+		.style("fill", "white")
+		.style("color", "white")
+		.style("font-size","12px")
+		.text("(Distances further away from center are larger)")
     var gr = svg.append("g")
         .attr("class", "r axis")
         .style("color", "white")
         .selectAll("g")
-        .data([10, 25, 50, 100, 250, 500, 1000, 2500, 5000])
+        .data([10, 25, 50, 100, 250, 500, 1000, 2500])
         .enter().append("g");
 
 
@@ -424,10 +453,9 @@
     function MoveMap(lat, lon) {
         OriginLat = lat;
         OriginLon = lon;
-        CloseRadial();
         map.panTo({lat: +OriginLat, lng: +OriginLon});
-
-
+		map.setZoom(5);
+        CloseRadial();
     }
 
     function CloseRadial() {
@@ -437,7 +465,7 @@
     function OpenRadial() {
         console.log("Overlay");
         PopulateOverlay(OriginLat, OriginLon);
-        document.getElementById("RadialChart").style.width = "100%";
+        document.getElementById("RadialChart").style.width = "75%";
     }
 
     function PopulateOverlay(lat, lon) {
@@ -454,7 +482,7 @@
             var i
             for (i = 0; i < 19969; i++) {   //capping loop to avoid 32k Api calls while testing.
                 var d = metData[i]
-                if (d['mass (g)'] <= massHi && d['mass (g)'] >= massLo && d['year'] <= timeEnd && d['year'] >= timeStart) {
+                if (+d['mass (g)'] <= massHiMain && +d['mass (g)'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
 
                     var myLatLng = new google.maps.LatLng({lat: +d['reclat'], lng: +d['reclong']});
                     dist = google.maps.geometry.spherical.computeDistanceBetween(OriginLatLng, myLatLng);
@@ -591,8 +619,62 @@
         .attr("class", "brush")
         .call(d3.brushX()
             .extent([[0, 0], [width2, height2]])
-            .on("end", brushended));
+            .on("end", brushended)
+			.on("brush", updateRange));
 
+			
+var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (Warning:Long Animation Time)"}];
+
+  var MassSelect =  d3.select('#MSelect').append('select')
+      .attr('id','MSelect2')
+      .on('change',MChange)
+    .selectAll('option')
+      .data(thresholds)
+      .enter()
+    .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+
+
+function MChange() {
+	var value = document.getElementById("MSelect2").selectedIndex
+    if (value == 0) {
+        massLoMain = 100000
+    }
+    else if (value == 1) {
+        massLoMain = 10000
+    }    
+    else if (value == 2) {
+       massLoMain = 1000
+    }    
+    else if (value == 3) {
+        massLoMain = 100
+    }    
+    else if (value == 4) {
+        massLoMain = 0
+    }
+	PopulateOverlay(OriginLat, OriginLon);
+    dropWithoutAnimation()
+
+}			
+
+			
+			
+	function updateRange() {
+	    if (!d3.event.sourceEvent) return; // Only transition after input.
+        if (!d3.event.selection) return; // Ignore empty selections.
+        var d0 = d3.event.selection.map(x.invert),
+            d1 = d0.map(Math.round);
+        // If empty when rounded, use floor & ceil instead.
+        if (d1[0] >= d1[1]) {
+            d1[0] = Math.floor(d0[0]);
+            d1[1] = Math.ceil(d1[0]);
+        }
+		AniStartYear = d1[0]
+        AniEndYear = d1[1]
+		document.getElementById("yearLabel").innerHTML = d1[0] + " - " + d1[1];
+	}
+			
     function brushended() {
         if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
@@ -600,13 +682,14 @@
             d1 = d0.map(Math.round);
         // If empty when rounded, use floor & ceil instead.
         if (d1[0] >= d1[1]) {
-            d1[0] = d3.timeYear.floor(d0[0]);
-            d1[1] = d3.timeYear.offset(d1[0]);
+            d1[0] = Math.floor(d0[0]);
+            d1[1] = Math.ceil(d1[0]);
         }
         d3.select(this).transition().call(d3.event.target.move, d1.map(x));
 		
 		AniStartYear = d1[0]
         AniEndYear = d1[1]
+		PopulateOverlay(OriginLat, OriginLon);
         dropWithoutAnimation()
     }
 
