@@ -193,26 +193,7 @@
         }
     }
 
-	function dropWithoutAnimation() {
-		clearMarkers();
-		AniStartYear = AniStartYear + 10
-		var meteoritesCoord = [];
-		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
-			var i;
-            for (i = 0; i < 19969; i++) {
-                var d = metData3[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {//capping loop to avoid 32k Api calls while testing.
 
-                    meteoritesCoord.push({lat: +d['reclat'], lng: +d['reclong']})
-                    names.push(d['name'])
-                }
-            }
-		
-			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i], 0, names[i]);
-			}
-		})
-	}
 
     function addMarkerWithTimeout(position, timeout, name) {
         window.setTimeout(function () {
