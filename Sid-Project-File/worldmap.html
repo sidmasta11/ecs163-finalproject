@@ -16,18 +16,16 @@
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
         #map {
-            height: 80%;
+            height: 85%;
             position: relative;
         }
 
         #floating-panel {
             position: absolute;
-            top: 10px;
-            left: 25%;
+            top: 5%;
+            right: 10%;
             z-index: 5;
             background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
             text-align: center;
             font-family: 'Roboto','sans-serif';
             line-height: 30px;
@@ -130,13 +128,15 @@
 
 		#yearLabel {
            position: absolute;
-           top: 0px;
+           top: 7%;
+           right: 10%;
            background-color: #fec12d;
            text-align: center;
            font-family: 'Roboto','sans-serif';
-           line-height: 30px;
+           line-height: 50px;
            padding-left: 10px;
             padding-right: 10px;
+            font: 24px sans-serif;
        }
 
         img.center {
@@ -170,10 +170,10 @@
 </head>
 <body>
 <div id="floating-panel" style="margin-top: 50px">
-   <button id="drop" onclick="drop()">Drop Markers</button>
+   <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
 <div id="yearLabel" style="margin-top: 10px">TEXT</div>
-<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 50px"></div>
+<div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 300px"></div>
 <div id="RadialChart" class="overlay">
 
     <!-- Button to close the overlay navigation -->
@@ -194,10 +194,10 @@
 
     var markers = [];
     var map;
-    var massHiMain = 91000000
-    var massLoMain = 100000
-    var AniStartYear = 1958
-    var AniEndYear = 2020
+    var massHiMain = 1000000000;
+    var massLoMain = 100000;
+    var AniStartYear = 1958;
+    var AniEndYear = 2020;
     
     
     
@@ -208,13 +208,13 @@
 			var i;
             for (i = 0; i < 19969; i++) {
                 var d = metData3[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {
-                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], d['mass'], d['year']])
+                if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year']])
                     //names.push(d['name'])
                 }
             }
 			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1]);
+				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
 			}
 		})
 	}
@@ -226,14 +226,14 @@
             var i;
             for (i = 0; i < 19969; i++) {
                 var d = metData2[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {
+                if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
 
-                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], d['mass'], d['year']])
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year']])
                     //names.push(d['name'])
                 }
             }
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 3,
+                zoom: 2,
                 center: {lat: 0, lng: 0},
                 mapTypeId: 'hybrid'
             });
@@ -252,17 +252,55 @@
 
     function drop() {
         clearMarkers();
+        var animationSpeed = 30;
         for (var i = 0; i < meteoritesCoord.length; i++) {
-            addMarkerWithTimeout(meteoritesCoord[i][0], i * 100 +1, meteoritesCoord[i][1], meteoritesCoord[i][3]);
+            addMarkerWithTimeout(meteoritesCoord[i][0], i * animationSpeed +1, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
         }
     }
 
-    function addMarkerWithTimeout(position, timeout, name, year) {
+    function addMarkerWithTimeout(position, timeout, name, year, mass) {
         window.setTimeout(function () {
+            var beginningSize = 2;
+            if (mass < 100) {
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize, beginningSize)
+                };
+            }
+            else if(mass < 1000){
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize*2, beginningSize*2)
+                };
+            }
+            else if(mass < 10000){
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize*4, beginningSize*4)
+                };
+            }
+            else if(mass < 100000){
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize*8, beginningSize*8)
+                };
+            }
+            else if(mass < 1000000){
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize*16, beginningSize*16)
+                };
+            }
+            else{
+                var imageUsed = {
+                    url: "meteorite_icon_fire.png",
+                    scaledSize: new google.maps.Size(beginningSize*32, beginningSize*32)
+                };
+            }
             markers.push(new google.maps.Marker({
                 position: position,
                 map: map,
-                icon: "meteorite_icon_fire.png",
+                icon: imageUsed,
                 animation: google.maps.Animation.DROP,
                 title: name
             }));
@@ -508,7 +546,7 @@
     // Slider script
     var margin2 = {top: 10, right: 50, bottom: 20, left: 50},
         width2 = (window.innerWidth) - margin2.left - margin2.right,
-        height2 = 100 - margin2.top - margin2.bottom;
+        height2 = 67 - margin2.top - margin2.bottom;
 
     var x = d3.scaleLinear()
         .domain([1958, 2013])
