@@ -127,6 +127,7 @@
             right: 45px;
             font-size: 60px;
         }
+
 		#yearLabel {
            position: absolute;
            top: 0px;
@@ -140,6 +141,32 @@
            padding-left: 10px;
        }
 
+        img.center {
+    		display: block;
+    		margin: 0 auto;
+		}
+
+		div.tooltip {
+		  position: absolute;
+		  text-align: center;
+		  width: 130px;
+		  height: 50px;
+		  padding: 3px 10px 10px 10px;
+		  font: 12px sans-serif;
+		  color: white;
+		  background: dimgrey;
+		  border: 0px;
+		  border-radius: 8px;
+		  pointer-events: none;
+		}
+
+		.radial_circle {
+			cursor: pointer;
+		}
+
+		.radial_circle:hover {
+    		fill: yellow;
+		}
 
     </style>
 </head>
@@ -392,11 +419,17 @@
                 }
             }
 
+            //this variable is declared to show tooltips
+    		var tip = d3.select('#RadialChart').append("div")
+    		.attr("class", "tooltip")
+    		.style("opacity", 0);
+
             svg.selectAll("point")
                 .data(data2)
                 .enter()
                 .append("circle")
                 .attr("class", "point")
+                .attr("class", "radial_circle")
                 .attr("transform", function (d) {
                     var coors = line([d]).slice(1).slice(0, -1);
                     return "translate(" + coors + ")"
@@ -450,10 +483,24 @@
                     MoveMap(d[4], d[5])
                 })
 
-                .append('title') // Tooltip
-                .text(function (d) {
-                    return "Bearing: " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: " + d[2] + "g, Class: " + d[3]
-                })
+                .on("mouseover", function(d) {
+	               tip.transition()
+	                 .duration(200)
+	                 .style("opacity", .9);
+	               tip.html("<b>Bearing:</b> " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + "<br/><b>Distance:</b> " + Math.round(d[1]) + "km<br/><b>Mass:</b> " + d[2] + "g<br/><b>Class:</b> " + d[3])
+	                 .style("left", (d3.event.pageX) + "px")
+	                 .style("top", (d3.event.pageY - 28) + "px");
+	            })
+		        .on("mouseout", function(d) {
+		            tip.transition()
+		              .duration(500)
+		              .style("opacity", 0);
+		         })
+
+                // .append('title') // Tooltip
+                // .text(function (d) {
+                //     return "Bearing: " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: " + d[2] + "g, Class: " + d[3]
+                // })
         });
     }
 </script>
@@ -515,6 +562,10 @@
     }
 
 </script>
+
+<div id="classifications">
+	<img src="meteorite_classification.gif" alt="Meterorite Classifications" style="width:1064px;height:356px;">
+</div>
 
 
 <script async defer
