@@ -626,11 +626,30 @@
             }
             //console.log(result);
             map.panTo({lat: result[0], lng: result[1]});
-            var zoomLevel = 10;
+            var zoomLevel = 8;
             map.setZoom(zoomLevel);
-            // Create a new instance of the MarkerManager
-            var mgr = new MarkerManager(map);
+            var visibleMarkers = 0;
+
+
+            var visibleMarkers = 0;
+            while (visibleMarkers == 0) {
+                visibleMarkers = countVisible();
+                zoomLevel--;
+                map.setZoom(zoomLevel)
+            }
+            map.setZoom(zoomLevel+1);
+
         });
+    }
+
+    function countVisible(){
+        var visible = 0;
+        for (var i = 0; i < markers.length; i++) {
+            if (map.getBounds().contains(markers[i].getPosition())) {
+                visible++;
+            }
+        }
+        return visible;
     }
 </script>
 
