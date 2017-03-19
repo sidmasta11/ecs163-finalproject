@@ -127,15 +127,27 @@
             right: 45px;
             font-size: 60px;
         }
-
+		#yearLabel {
+           position: absolute;
+           top: 0px;
+           z-index: 5;
+           background-color: #fff;
+           padding: 5px;
+           border: 1px solid #999;
+           text-align: center;
+           font-family: 'Roboto','sans-serif';
+           line-height: 30px;
+           padding-left: 10px;
+       }
 
 
     </style>
 </head>
 <body>
 <div id="floating-panel" style="margin-top: 50px">
-    <button id="drop" onclick="drop()">Drop Markers</button>
+   <button id="drop" onclick="drop()">Drop Markers</button>
 </div>
+<div id="yearLabel" style="margin-top: 10px">TEXT</div>
 <div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 50px"></div>
 <div id="RadialChart" class="overlay">
 
@@ -153,7 +165,7 @@
     //posit
     var meteoritesCoord = [];
 
-    var names = [];
+    //var names = [];
 
     var markers = [];
     var map;
@@ -163,6 +175,7 @@
     var AniEndYear = 2020
     
     
+    
 	function dropWithoutAnimation() {
 		clearMarkers();
 		var meteoritesCoord = [];
@@ -170,15 +183,13 @@
 			var i;
             for (i = 0; i < 19969; i++) {
                 var d = metData3[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {//capping loop to avoid 32k Api calls while testing.
-
-                    meteoritesCoord.push({lat: +d['reclat'], lng: +d['reclong']})
-                    names.push(d['name'])
+                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], d['mass'], d['year']])
+                    //names.push(d['name'])
                 }
             }
-		
 			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i], 0, names[i]);
+				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1]);
 			}
 		})
 	}
@@ -190,10 +201,10 @@
             var i;
             for (i = 0; i < 19969; i++) {
                 var d = metData2[i];
-                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {//capping loop to avoid 32k Api calls while testing.
+                if (d['mass'] <= massHiMain && d['mass'] >= massLoMain && d['year'] <= AniEndYear && d['year'] >= AniStartYear) {
 
-                    meteoritesCoord.push({lat: +d['reclat'], lng: +d['reclong']})
-                    names.push(d['name'])
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], d['mass'], d['year']])
+                    //names.push(d['name'])
                 }
             }
             map = new google.maps.Map(document.getElementById('map'), {
@@ -217,11 +228,11 @@
     function drop() {
         clearMarkers();
         for (var i = 0; i < meteoritesCoord.length; i++) {
-            addMarkerWithTimeout(meteoritesCoord[i], i * 100, names[i]);
+            addMarkerWithTimeout(meteoritesCoord[i][0], i * 100, meteoritesCoord[i][1], meteoritesCoord[i][3]);
         }
     }
 
-    function addMarkerWithTimeout(position, timeout, name) {
+    function addMarkerWithTimeout(position, timeout, name, year) {
         window.setTimeout(function () {
             markers.push(new google.maps.Marker({
                 position: position,
@@ -230,6 +241,7 @@
                 animation: google.maps.Animation.DROP,
                 title: name
             }));
+            document.getElementById("yearLabel").innerHTML = year;
         }, timeout);
     }
 
@@ -497,9 +509,6 @@
 		AniStartYear = d1[0]
         AniEndYear = d1[1]
         dropWithoutAnimation()
-        
-        
-        
     }
 
 </script>
