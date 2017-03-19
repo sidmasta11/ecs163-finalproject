@@ -139,6 +139,12 @@
             font: 24px sans-serif;
        }
 
+        #geocoderBox{
+            position: absolute;
+            top: 18%;
+            right:2%;
+        }
+
         img.center {
     		display: block;
     		margin: 0 auto;
@@ -173,6 +179,12 @@
    <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
 <div id="yearLabel" style="margin-top: 10px">TEXT</div>
+<div id="geocoderBox">
+    <form action="javascript:getLatLong(document.getElementById('locationString').value)">
+    Location: <input type="text" name="locationString" id="locationString"><br>
+    <input type="submit" value="Submit">
+    </form>
+</div>
 <div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 300px"></div>
 <div id="RadialChart" class="overlay">
 
@@ -195,7 +207,7 @@
     var markers = [];
     var map;
     var massHiMain = 1000000000;
-    var massLoMain = 100000;
+    var massLoMain = 10000;
     var AniStartYear = 1958;
     var AniEndYear = 2020;
     
@@ -253,6 +265,7 @@
     function drop() {
         clearMarkers();
         var animationSpeed = 30;
+        //var animationSpeed = 1;
         for (var i = 0; i < meteoritesCoord.length; i++) {
             addMarkerWithTimeout(meteoritesCoord[i][0], i * animationSpeed +1, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
         }
@@ -597,6 +610,28 @@
         dropWithoutAnimation()
     }
 
+</script>
+
+<script type="text/javascript">
+    //geocoder stuff
+    function getLatLong(address) {
+        var geocoder = new google.maps.Geocoder();
+        var result = [];
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                result[0] = results[0].geometry.location.lat();
+                result[1] = results[0].geometry.location.lng();
+            } else {
+                result = "Unable to find address: " + status;
+            }
+            //console.log(result);
+            map.panTo({lat: result[0], lng: result[1]});
+            var zoomLevel = 10;
+            map.setZoom(zoomLevel);
+            // Create a new instance of the MarkerManager
+            var mgr = new MarkerManager(map);
+        });
+    }
 </script>
 
 <!--<div id="classifications">
