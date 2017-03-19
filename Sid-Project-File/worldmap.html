@@ -131,14 +131,12 @@
 		#yearLabel {
            position: absolute;
            top: 0px;
-           z-index: 5;
-           background-color: #fff;
-           padding: 5px;
-           border: 1px solid #999;
+           background-color: #fec12d;
            text-align: center;
            font-family: 'Roboto','sans-serif';
            line-height: 30px;
            padding-left: 10px;
+            padding-right: 10px;
        }
 
         img.center {
@@ -205,7 +203,7 @@
     
 	function dropWithoutAnimation() {
 		clearMarkers();
-		var meteoritesCoord = [];
+        meteoritesCoord = [];
 		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
 			var i;
             for (i = 0; i < 19969; i++) {
