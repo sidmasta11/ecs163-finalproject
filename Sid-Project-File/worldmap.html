@@ -12,7 +12,6 @@
             width: 100%;
             overflow: hidden;
         }
-
         #title{
             top	: 2%;
             position: fixed;
@@ -26,7 +25,18 @@
             height: 85%;
             position: fixed;
         }
-
+        #radialhint{
+            position: absolute;
+            top: 51%;
+            left:81%;
+        }
+       
+       
+		#sliderhint{
+			position: absolute;
+			top: 89%;
+			left: 81%
+		}
         #floating-panel {
             position: absolute;
             top: 8%;
@@ -209,6 +219,10 @@
 <div id="floating-panel" style="margin-top: 50px">
     <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
+
+<div id="radialhint">Click on map to bring out radial chart</div>
+<div id="sliderhint">Choose a year range</div>
+
 <div id="yearLabel" style="margin-top: 10px">YEAR</div>
 <div id="geocoderBox">
     <form action="javascript:getLatLong(document.getElementById('locationString').value)">
