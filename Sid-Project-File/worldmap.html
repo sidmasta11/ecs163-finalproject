@@ -14,11 +14,11 @@
         }
 
         #title{
-            height: 3%;
+            top	: 2%;
             position: fixed;
             text-align: center;
             font: 20px sans-serif;
-            padding-left: 50%;
+            padding-left: 30%;
         }
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
@@ -190,7 +190,7 @@
 </head>
 
 <body>
-<div id="title">Where do Meteorites Land?</div>
+<div id="title">How Close Are You to a Meteorite?</div>
 <!--<h3>How Does the Louisville Government Spend Money?</h3>-->
 <div id="floating-panel" style="margin-top: 50px">
     <button id="drop" onclick="drop()">Replay Animation</button>
@@ -336,6 +336,7 @@
                 animation: google.maps.Animation.DROP,
                 title: name
             }));
+			
             if (timeout > 0 )
                 document.getElementById("yearLabel").innerHTML = year;
 
@@ -625,7 +626,7 @@
         .selectAll("text")
         .attr("x", 0)
         .style("font-size","8px")
-        .style('fill', 'darkOrange');
+        .style('fill', 'black');
 
     svg2.append("g")
         .attr("class", "brush")
@@ -635,7 +636,7 @@
             .on("brush", updateRange));
 
 
-    var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (Warning:Long Animation Time)"}];
+    var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (long load time)"}];
 
     var MassSelect =  d3.select('#MSelect').append('select')
         .attr('id','MSelect2')
