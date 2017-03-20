@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Marker animations with <code>setTimeout()</code></title>
+    <title>METEORITES LANDINGS</title>
     <style>
 
         html, body {
@@ -13,6 +13,13 @@
             overflow: hidden;
         }
 
+        #title{
+            height: 3%;
+            position: fixed;
+            text-align: center;
+            font: 20px sans-serif;
+            padding-left: 50%;
+        }
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
         #map {
@@ -181,7 +188,10 @@
 
     </style>
 </head>
+
 <body>
+<div id="title">Where do Meteorites Land?</div>
+<!--<h3>How Does the Louisville Government Spend Money?</h3>-->
 <div id="floating-panel" style="margin-top: 50px">
     <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
@@ -202,6 +212,7 @@
     <!-- Overlay content -->
 
 </div>
+
 <script src="d3/d3.v4.min.js"></script>
 <script>
     // If you're adding a number of markers, you may want to drop them on the map
