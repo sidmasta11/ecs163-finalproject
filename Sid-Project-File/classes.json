@@ -1,13 +1,28 @@
 {
-    "name": "Top Level",
+    "name": "Meteorites",
     "children": [
       { 
-        "name": "Level 2: A",
+        "name": "Chondrites",
         "children": [
-          { "name": "Son of A" },
-          { "name": "Daughter of A" }
+          { "name": "Carbonaceous" },
+          { "name": "Other" },
+          { "name": "Ordinary" }
         ]
       },
-      { "name": "Level 2: B" }
+      { 
+        "name": "Achondrites",
+        "children": [
+          { "name": "HED" },
+          { "name": "Lunar" },
+          { "name": "Martian" },
+          { "name": "Other" }
+        ]
+      },
+      { 
+        "name": "Metachondrites"
+      },
+      { 
+        "name": "Stony-Iron"
+      }
     ]
 }

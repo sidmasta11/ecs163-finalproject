@@ -185,7 +185,6 @@
 		}
 
 		.node circle {
-		  fill: #fff;
 		  stroke: steelblue;
 		  stroke-width: 3px;
 		}
@@ -255,16 +254,16 @@
         meteoritesCoord = [];
 		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
 			var i;
-            for (i = 0; i < 19969; i++) {
+            for (i = 0; i < 8928; i++) {
                 var d = metData3[i];
                 if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
                 	//console.log(d['id'])
-                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year'], +d['id']])
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year'], +d['id'], d['majorclass']])
                     //names.push(d['name'])
                 }
             }
 			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2], meteoritesCoord[i][4]);
+				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2], meteoritesCoord[i][4], meteoritesCoord[i][5]);
 			}
 		})
 	}
@@ -274,11 +273,11 @@
 
 
             var i;
-            for (i = 0; i < 19969; i++) {
+            for (i = 0; i < 8928; i++) {
                 var d = metData2[i];
                 if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
 
-                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year'], +d['id']])
+                    meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year'], +d['id'], d['majorclass']])
                     //names.push(d['name'])
                 }
             }
@@ -305,11 +304,11 @@
         var animationSpeed = 30;
         //var animationSpeed = 1;
         for (var i = 0; i < meteoritesCoord.length; i++) {
-            addMarkerWithTimeout(meteoritesCoord[i][0], i * animationSpeed +1, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2], meteoritesCoord[i][4]);
+            addMarkerWithTimeout(meteoritesCoord[i][0], i * animationSpeed +1, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2], meteoritesCoord[i][4], meteoritesCoord[i][5]);
         }
     }
 
-    function addMarkerWithTimeout(position, timeout, name, year, mass, id) {
+    function addMarkerWithTimeout(position, timeout, name, year, mass, id, majorclass) {
     	//console.log(id)
         window.setTimeout(function () {
             var beginningSize = 2;
@@ -355,13 +354,13 @@
                 map: map,
                 icon: imageUsed,
                 animation: google.maps.Animation.DROP,
-                title: name
+                title: majorclass //TODO kind of hacky workaround. May have to change
             });
 
             marker.addListener('click', function() {
     			//map.setZoom(8);
     			map.setCenter(marker.getPosition());
-    			PopulateViz3(name,id);
+    			PopulateViz3(name,id,majorclass);
     			OpenViz3();
   			});
 
@@ -633,8 +632,11 @@
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+    var tree_svg = viz3Svg.append("svg");
+
     function CloseViz3() {
     	viz3Svg.selectAll("text").remove()
+        tree_svg.selectAll("*").remove()
         document.getElementById("Viz3").style.width = "0%";
     }
 
@@ -645,7 +647,7 @@
         document.getElementById("Viz3").style.width = "75%";
     }
 
-    function PopulateViz3(name, id) {
+    function PopulateViz3(name, id, majorclass) {
 
 		viz3Svg.selectAll("text").remove()
 
@@ -706,11 +708,11 @@
 			// append the svg object to the body of the page
 			// appends a 'group' element to 'svg'
 			// moves the 'group' element to the top left margin
-			var tree_svg = viz3Svg.append("svg")
+			tree_svg = viz3Svg.append("svg")
 			    .attr("width", w)//+ margin.right + margin.left)
 			    .attr("height", h)// + margin.top + margin.bottom)
-			    .attr("x", -width/2)
-				.attr("y", -height/2.5)
+			    .attr("x", -width/3)
+				.attr("y", -height/2.2)
 			    .append("g")
         		//.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 			    .attr("transform", "translate("
@@ -729,7 +731,7 @@
 			root.y0 = 0;
 
 			// Collapse after the second level
-			root.children.forEach(collapse);
+			//root.children.forEach(collapse);
 
 			update(root);
 
@@ -765,15 +767,22 @@
 			      .attr('class', 'node')
 			      .attr("transform", function(d) {
 			        return "translate(" + source.y0 + "," + source.x0 + ")";
-			    })
-			    .on('click', click);
+			    });
+			    //.on('click', click); //prevent collapsing of tree
 
 			  // Add Circle for the nodes
 			  nodeEnter.append('circle')
 			      .attr('class', 'node')
 			      .attr('r', 1e-6)
 			      .style("fill", function(d) {
-			          return d._children ? "lightsteelblue" : "#fff";
+                    console.log(d.data.name);
+                    //if node on graph is a 
+                    if((majorclass.search(d.data.name) != -1) || (d.data.name === "Meteorites")){
+                        console.log("yellow");
+                        return "coral";
+                    }
+                    return "#fff";
+                    //return d._children ? "lightsteelblue" : "#fff";
 			      });
 
 			  // Add labels for the nodes
@@ -803,9 +812,19 @@
 			  nodeUpdate.select('circle.node')
 			    .attr('r', 10)
 			    .style("fill", function(d) {
-			        return d._children ? "lightsteelblue" : "#fff";
-			    })
-			    .attr('cursor', 'pointer');
+                    console.log(d.data.name);
+                    //if node on graph is a 
+                    if((majorclass.search(d.data.name) != -1) || (d.data.name === "Meteorites")){
+                        return "coral";
+                    }
+                    return "#fff";
+                    //return d._children ? "lightsteelblue" : "#fff";
+                  })
+			    .attr('cursor', 'pointer')
+                .on('click', function (d) {
+                    highlight_markers(d.data.name);
+                    CloseViz3();
+                });
 
 
 			  // Remove any exiting nodes
@@ -884,6 +903,22 @@
 			    update(d);
 			  }
 			}
+
+            function highlight_markers(majorclass){
+                for (var i = 0; i < markers.length; i++) {
+
+                    var oldIcon = markers[i].icon;
+                    //console.log(oldSize)
+
+                    if(markers[i].title.search(majorclass) != -1 || majorclass === "Meteorites"){
+                        oldIcon.url = "meteorite_icon_fire.png"
+                    }
+                    else{
+                        oldIcon.url = "meteorite_icon_deselect.png"; // url
+                    }
+                    markers[i].setIcon(oldIcon);
+                }
+            }
 
 
 	        //PopulateOverlay(OriginLat, OriginLon);
