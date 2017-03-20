@@ -17,7 +17,7 @@
          * element that contains the map. */
         #map {
             height: 85%;
-            position: relative;
+            position: fixed;
         }
 
         #floating-panel {
@@ -585,9 +585,9 @@
 
 <script>
     // Slider script
-    var margin2 = {top: 10, right: 50, bottom: 20, left: 50},
+    var margin2 = {top: window.innerHeight*.001, right: 50, bottom: window.innerHeight*.05, left: 50},
         width2 = (window.innerWidth) - margin2.left - margin2.right,
-        height2 = 67 - margin2.top - margin2.bottom;
+        height2 = (0.09*window.innerHeight)  - margin2.top - margin2.bottom;
 
     var x = d3.scaleLinear()
         .domain([1958, 2013])
@@ -596,6 +596,7 @@
     var svg2 = d3.select("body").append("svg")
         .attr("width", width2 + margin2.left + margin2.right)
         .attr("height", height2 + margin2.top + margin2.bottom)
+        .attr("position", "relative")
         .append("g")
         .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
