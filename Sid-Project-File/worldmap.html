@@ -91,7 +91,7 @@
             background-color: rgb(0,0,0); /* Black fallback color */
             background-color: rgba(0,0,0, 0.77); /* Black w/opacity */
             overflow-x: hidden; /* Disable horizontal scroll */
-			overflow-y: hidden; /* Disable horizontal scroll */
+            overflow-y: hidden; /* Disable horizontal scroll */
             transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
         }
 
@@ -127,69 +127,69 @@
             font-size: 60px;
         }
 
-		#yearLabel {
-           position: absolute;
-           top: 7%;
-           left: 85%;
-           background-color: #fec12d;
-           text-align: center;
-           font-family: 'Roboto','sans-serif';
-           line-height: 50px;
-           padding-left: 10px;
+        #yearLabel {
+            position: absolute;
+            top: 7%;
+            left: 85%;
+            background-color: #fec12d;
+            text-align: center;
+            font-family: 'Roboto','sans-serif';
+            line-height: 50px;
+            padding-left: 10px;
             padding-right: 10px;
             font: 24px sans-serif;
-       }
+        }
 
         #geocoderBox{
             position: absolute;
             top: 21%;
             left:81%;
         }
-		
-		#MSelect{
+
+        #MSelect{
             position: absolute;
             top: 28%;
             left:81%;
         }
 
         img.center {
-    		display: block;
-    		margin: 0 auto;
-		}
+            display: block;
+            margin: 0 auto;
+        }
 
-		div.tooltip {
-		  position: absolute;
-		  text-align: center;
-		  width: 130px;
-		  height: 50px;
-		  padding: 3px 10px 10px 10px;
-		  font: 12px sans-serif;
-		  color: white;
-		  background: dimgrey;
-		  border: 0px;
-		  border-radius: 8px;
-		  pointer-events: none;
-		}
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 130px;
+            height: 50px;
+            padding: 3px 10px 10px 10px;
+            font: 12px sans-serif;
+            color: white;
+            background: dimgrey;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
 
-		.radial_circle {
-			cursor: pointer;
-		}
+        .radial_circle {
+            cursor: pointer;
+        }
 
-		.radial_circle:hover {
-    		fill: yellow;
-		}
+        .radial_circle:hover {
+            fill: yellow;
+        }
 
     </style>
 </head>
 <body>
 <div id="floating-panel" style="margin-top: 50px">
-   <button id="drop" onclick="drop()">Replay Animation</button>
+    <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
 <div id="yearLabel" style="margin-top: 10px">YEAR</div>
 <div id="geocoderBox">
     <form action="javascript:getLatLong(document.getElementById('locationString').value)">
-    Location: <input type="text" name="locationString" id="locationString"><br>
-    <input type="submit" value="Submit">
+        Location: <input type="text" name="locationString" id="locationString"><br>
+        <input type="submit" value="Submit">
     </form>
 </div>
 <div id="MSelect"><br>Mass Threshold Selection:</div>
@@ -218,14 +218,14 @@
     var massLoMain = 100000;
     var AniStartYear = 1958;
     var AniEndYear = 2020;
-    
-    
-    
-	function dropWithoutAnimation() {
-		clearMarkers();
+
+
+
+    function dropWithoutAnimation() {
+        clearMarkers();
         meteoritesCoord = [];
-		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
-			var i;
+        d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
+            var i;
             for (i = 0; i < 19969; i++) {
                 var d = metData3[i];
                 if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
@@ -233,11 +233,11 @@
                     //names.push(d['name'])
                 }
             }
-			for (var i = 0; i < meteoritesCoord.length; i++) {
-				addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
-			}
-		})
-	}
+            for (var i = 0; i < meteoritesCoord.length; i++) {
+                addMarkerWithTimeout(meteoritesCoord[i][0], 0, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
+            }
+        })
+    }
 
     function initMap() {
         d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData2) {
@@ -325,8 +325,8 @@
                 animation: google.maps.Animation.DROP,
                 title: name
             }));
-            if (timeout > 0 ) 
-				document.getElementById("yearLabel").innerHTML = year;
+            if (timeout > 0 )
+                document.getElementById("yearLabel").innerHTML = year;
 
         }, timeout);
     }
@@ -374,31 +374,31 @@
     var svg = d3.select('#RadialChart').append("svg")
         .attr("width", width)
         .attr("height", height)
-		.style("color", "white")
+        .style("color", "white")
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-		
-	svg.append("text")
-		.attr("x", -width/2+10)
-		.attr("y", -height/2+85)
-		.style("fill", "white")
-		.style("color", "white")
-		.style("font-size","28px")
-		.text("Radial Proximity Map")
-	svg.append("text")
-		.attr("x", -width/2+10)
-		.attr("y", -height/2+107)
-		.style("fill", "white")
-		.style("color", "white")
-		.style("font-size","20px")
-		.text("Logarithmic Scale")
-	svg.append("text")
-		.attr("x", -width/2+10)
-		.attr("y", -height/2+125)
-		.style("fill", "white")
-		.style("color", "white")
-		.style("font-size","12px")
-		.text("(Distances further away from center are larger)")
+
+    svg.append("text")
+        .attr("x", -width/2+10)
+        .attr("y", -height/2+85)
+        .style("fill", "white")
+        .style("color", "white")
+        .style("font-size","28px")
+        .text("Radial Proximity Map")
+    svg.append("text")
+        .attr("x", -width/2+10)
+        .attr("y", -height/2+107)
+        .style("fill", "white")
+        .style("color", "white")
+        .style("font-size","20px")
+        .text("Logarithmic Scale")
+    svg.append("text")
+        .attr("x", -width/2+10)
+        .attr("y", -height/2+125)
+        .style("fill", "white")
+        .style("color", "white")
+        .style("font-size","12px")
+        .text("(Distances further away from center are larger)")
     var gr = svg.append("g")
         .attr("class", "r axis")
         .style("color", "white")
@@ -454,7 +454,7 @@
         OriginLat = lat;
         OriginLon = lon;
         map.panTo({lat: +OriginLat, lng: +OriginLon});
-		map.setZoom(5);
+        map.setZoom(5);
         CloseRadial();
     }
 
@@ -497,9 +497,9 @@
             }
 
             //this variable is declared to show tooltips
-    		var tip = d3.select('#RadialChart').append("div")
-    		.attr("class", "tooltip")
-    		.style("opacity", 0);
+            var tip = d3.select('#RadialChart').append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
             svg.selectAll("point")
                 .data(data2)
@@ -561,23 +561,23 @@
                 })
 
                 .on("mouseover", function(d) {
-	               tip.transition()
-	                 .duration(200)
-	                 .style("opacity", .9);
-	               tip.html("<b>Bearing:</b> " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + "<br/><b>Distance:</b> " + Math.round(d[1]) + "km<br/><b>Mass:</b> " + d[2] + "g<br/><b>Class:</b> " + d[3])
-	                 .style("left", (d3.event.pageX) + "px")
-	                 .style("top", (d3.event.pageY - 28) + "px");
-	            })
-		        .on("mouseout", function(d) {
-		            tip.transition()
-		              .duration(500)
-		              .style("opacity", 0);
-		         })
+                    tip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tip.html("<b>Bearing:</b> " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + "<br/><b>Distance:</b> " + Math.round(d[1]) + "km<br/><b>Mass:</b> " + d[2] + "g<br/><b>Class:</b> " + d[3])
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                    tip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
 
-                // .append('title') // Tooltip
-                // .text(function (d) {
-                //     return "Bearing: " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: " + d[2] + "g, Class: " + d[3]
-                // })
+            // .append('title') // Tooltip
+            // .text(function (d) {
+            //     return "Bearing: " + (450 - d[0] / (Math.PI / 180)).toFixed(2) + ", Distance: " + Math.round(d[1]) + "km, Mass: " + d[2] + "g, Class: " + d[3]
+            // })
         });
     }
 </script>
@@ -621,48 +621,48 @@
         .call(d3.brushX()
             .extent([[0, 0], [width2, height2]])
             .on("end", brushended)
-			.on("brush", updateRange));
-
-			
-var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (Warning:Long Animation Time)"}];
-
-  var MassSelect =  d3.select('#MSelect').append('select')
-      .attr('id','MSelect2')
-      .on('change',MChange)
-    .selectAll('option')
-      .data(thresholds)
-      .enter()
-    .append('option')
-      .attr('value', function (d) { return d.text })
-      .text(function (d) { return d.text ;})
+            .on("brush", updateRange));
 
 
-function MChange() {
-	var value = document.getElementById("MSelect2").selectedIndex
-    if (value == 0) {
-        massLoMain = 100000
+    var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (Warning:Long Animation Time)"}];
+
+    var MassSelect =  d3.select('#MSelect').append('select')
+        .attr('id','MSelect2')
+        .on('change',MChange)
+        .selectAll('option')
+        .data(thresholds)
+        .enter()
+        .append('option')
+        .attr('value', function (d) { return d.text })
+        .text(function (d) { return d.text ;})
+
+
+    function MChange() {
+        var value = document.getElementById("MSelect2").selectedIndex
+        if (value == 0) {
+            massLoMain = 100000
+        }
+        else if (value == 1) {
+            massLoMain = 10000
+        }
+        else if (value == 2) {
+            massLoMain = 1000
+        }
+        else if (value == 3) {
+            massLoMain = 100
+        }
+        else if (value == 4) {
+            massLoMain = 0
+        }
+        PopulateOverlay(OriginLat, OriginLon);
+        dropWithoutAnimation()
+
     }
-    else if (value == 1) {
-        massLoMain = 10000
-    }    
-    else if (value == 2) {
-       massLoMain = 1000
-    }    
-    else if (value == 3) {
-        massLoMain = 100
-    }    
-    else if (value == 4) {
-        massLoMain = 0
-    }
-	PopulateOverlay(OriginLat, OriginLon);
-    dropWithoutAnimation()
 
-}			
 
-			
-			
-	function updateRange() {
-	    if (!d3.event.sourceEvent) return; // Only transition after input.
+
+    function updateRange() {
+        if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
         var d0 = d3.event.selection.map(x.invert),
             d1 = d0.map(Math.round);
@@ -671,11 +671,11 @@ function MChange() {
             d1[0] = Math.floor(d0[0]);
             d1[1] = Math.ceil(d1[0]);
         }
-		AniStartYear = d1[0]
+        AniStartYear = d1[0]
         AniEndYear = d1[1]
-		document.getElementById("yearLabel").innerHTML = d1[0] + " - " + d1[1];
-	}
-			
+        document.getElementById("yearLabel").innerHTML = d1[0] + " - " + d1[1];
+    }
+
     function brushended() {
         if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
@@ -687,10 +687,10 @@ function MChange() {
             d1[1] = Math.ceil(d1[0]);
         }
         d3.select(this).transition().call(d3.event.target.move, d1.map(x));
-		
-		AniStartYear = d1[0]
+
+        AniStartYear = d1[0]
         AniEndYear = d1[1]
-		PopulateOverlay(OriginLat, OriginLon);
+        PopulateOverlay(OriginLat, OriginLon);
         dropWithoutAnimation()
     }
 
