@@ -226,7 +226,7 @@
         meteoritesCoord = [];
 		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData3) {
 			var i;
-            for (i = 0; i < 19969; i++) {
+            for (i = 0; i < metData3.length; i++) {
                 var d = metData3[i];
                 if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
                     meteoritesCoord.push([{lat: +d['reclat'], lng: +d['reclong']}, d['name'], +d['mass'], +d['year']])
@@ -240,11 +240,9 @@
 	}
 
     function initMap() {
-        d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData2) {
-
-
-            var i;
-            for (i = 0; i < 19969; i++) {
+		d3.csv("USE_THIS_Meteorite_Landings.csv", function (error, metData2) {
+            var i;		
+            for (i = 0; i < metData2.length; i++) {
                 var d = metData2[i];
                 if (+d['mass'] <= massHiMain && +d['mass'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
 
@@ -260,19 +258,15 @@
             google.maps.event.addListener(map, "click", function (event) {
                 OriginLat = event.latLng.lat();
                 OriginLon = event.latLng.lng();
-
                 OpenRadial()
             });
             drop();
-
         });
-
-
     }
 
     function drop() {
         clearMarkers();
-        var animationSpeed = 30;
+        var animationSpeed = 40;
         //var animationSpeed = 1;
         for (var i = 0; i < meteoritesCoord.length; i++) {
             addMarkerWithTimeout(meteoritesCoord[i][0], i * animationSpeed +1, meteoritesCoord[i][1], meteoritesCoord[i][3], meteoritesCoord[i][2]);
@@ -340,7 +334,7 @@
 
 
     /* Close when someone clicks on the "x" symbol inside the overlay */
-
+	var MetTypes = ["Achondrites-HED","Achondrites-Lunar","Achondrites-Martian","Achondrites-Other","Chondrites-Carbonaceous","Chondrites-Other","Chondrites-Ordinary","Metachondrites","Stony-Iron"]
 
     var OriginLat = 38.5449
     var OriginLon = -121.7405
@@ -399,6 +393,19 @@
 		.style("color", "white")
 		.style("font-size","12px")
 		.text("(Distances further away from center are larger)")
+		
+//Legend, probably shouldn't hard code it, but....
+	var k = 0
+	for (k=0;k < 9;k++) {
+	svg.append("text")
+		.attr("x", -width/2+10)
+		.attr("y", -height/2+170+k*21)
+		.style("fill", color(k))
+		.style("font-size","20px")
+		.text(MetTypes[k])
+	}
+		
+		
     var gr = svg.append("g")
         .attr("class", "r axis")
         .style("color", "white")
@@ -480,7 +487,7 @@
             var dist = 0;
             var bearing = 0;
             var i
-            for (i = 0; i < 19969; i++) {   //capping loop to avoid 32k Api calls while testing.
+            for (i = 0; i < metData.length; i++) {   //capping loop to avoid 32k Api calls while testing.
                 var d = metData[i]
                 if (+d['mass (g)'] <= massHiMain && +d['mass (g)'] >= massLoMain && +d['year'] <= AniEndYear && +d['year'] >= AniStartYear) {
 
@@ -491,7 +498,7 @@
                     }
                     if (dist < distMax * 1000) {
                         bearing = google.maps.geometry.spherical.computeHeading(OriginLatLng, myLatLng);
-                        data2 = data2.concat([[((450 - bearing) * (Math.PI / 180)), (dist / 1000), d['mass (g)'], d['recclass'], d['reclat'], d['reclong']]])
+                        data2 = data2.concat([[((450 - bearing) * (Math.PI / 180)), (dist / 1000), d['mass (g)'], d['majorclass'], d['reclat'], d['reclong']]])
                     }
                 }
             }
@@ -526,34 +533,34 @@
                 .attr("fill", function (d, i) {
                     //console.log(d[3])
                     //console.log(d[3].charAt(0))
-                    if (d[3].charAt(0) == 'A') {
+                    if (d[3] == MetTypes[0]) {
+                        return color(0)
+                    }
+                    if (d[3] == MetTypes[1]) {
                         return color(1)
                     }
-                    if (d[3].charAt(0) == 'C') {
+                    if (d[3] == MetTypes[2]) {
                         return color(2)
                     }
-                    if (d[3].charAt(0) == 'D') {
+                    if (d[3] == MetTypes[3]) {
                         return color(3)
                     }
-                    if (d[3].charAt(0) == 'E') {
+                    if (d[3] == MetTypes[4]) {
                         return color(4)
                     }
-                    if (d[3].charAt(0) == 'H') {
+                    if (d[3] == MetTypes[5]) {
                         return color(5)
                     }
-                    if (d[3].charAt(0) == 'I') {
+                    if (d[3] == MetTypes[6]) {
                         return color(6)
                     }
-                    if (d[3].charAt(0) == 'L') {
+                    if (d[3] == MetTypes[7]) {
                         return color(7)
                     }
-                    if (d[3].charAt(0) == 'M') {
+                    if (d[3] == MetTypes[8]) {
                         return color(8)
                     }
-                    if (d[3].charAt(0) == 'R') {
-                        return color(9)
-                    }
-                    return color(10)
+                    return color(9)
                 })
                 .attr("stroke", "white")
                 .on('click', function (d) {
@@ -623,7 +630,7 @@
 			.on("brush", updateRange));
 
 			
-var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (Warning:Long Animation Time)"}];
+var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"All Masses (Warning:Long Animation Time)"}];
 
   var MassSelect =  d3.select('#MSelect').append('select')
       .attr('id','MSelect2')
@@ -650,9 +657,6 @@ function MChange() {
     else if (value == 3) {
         massLoMain = 100
     }    
-    else if (value == 4) {
-        massLoMain = 0
-    }
 	PopulateOverlay(OriginLat, OriginLon);
     dropWithoutAnimation()
 
