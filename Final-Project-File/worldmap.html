@@ -178,7 +178,7 @@
 		div.tooltip {
 		  position: absolute;
 		  text-align: center;
-		  width: 130px;
+		  width: 200px;
 		  height: 50px;
 		  padding: 3px 10px 10px 10px;
 		  font: 12px sans-serif;
@@ -221,7 +221,6 @@
 
 <body>
 <div id="title">How Close Are You to a Meteorite?</div>
-<!--<h3>How Does the Louisville Government Spend Money?</h3>-->
 <div id="floating-panel" style="margin-top: 50px">
     <button id="drop" onclick="drop()">Replay Animation</button>
 </div>
@@ -389,7 +388,8 @@
                 map: map,
                 icon: imageUsed,
                 animation: google.maps.Animation.DROP,
-                title: majorclass //TODO kind of hacky workaround. May have to change
+                title: name,
+                customInfo: majorclass //TODO kind of hacky workaround. May have to change
             });
 			
             if (timeout > 0 )
@@ -969,7 +969,7 @@
                     var oldIcon = markers[i].icon;
                     //console.log(oldSize)
 
-                    if(markers[i].title.search(majorclass) != -1 || majorclass === "Meteorites"){
+                    if(markers[i].customInfo.search(majorclass) != -1 || majorclass === "Meteorites"){
                         oldIcon.url = "meteorite_icon_fire.png"
                     }
                     else{
@@ -1030,7 +1030,7 @@
             .on("brush", updateRange));
 
 
-    var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"Greater than 100g"}, {"text":"All Masses (long load time)"}];
+    var thresholds = [{"text":"Greater than 100kg"}, {"text":"Greater than 10kg"}, {"text":"Greater than 1kg"}, {"text":"All Masses (long load time)"}];
 
     var MassSelect =  d3.select('#MSelect').append('select')
         .attr('id','MSelect2')
@@ -1056,9 +1056,6 @@
         }
         else if (value == 3) {
             massLoMain = 100
-        }
-        else if (value == 4) {
-            massLoMain = 0
         }
         PopulateOverlay(OriginLat, OriginLon);
         dropWithoutAnimation()
@@ -1146,10 +1143,6 @@
         return visible;
     }
 </script>
-
-<!--<div id="classifications">
-	<img src="meteorite_classification.gif" alt="Meterorite Classifications" style="width:1064px;height:356px;">
-</div>-->
 
 
 <script async defer
