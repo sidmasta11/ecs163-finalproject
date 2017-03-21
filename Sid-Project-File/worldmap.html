@@ -163,6 +163,12 @@
             left:81%;
         }
 
+        #openRadialBox{
+            position: absolute;
+            top: 27%;
+            left:81%;
+        }
+
         #MSelect{
             position: absolute;
             top: 28%;
@@ -230,6 +236,13 @@
         <input type="submit" value="Submit">
     </form>
 </div>
+
+<div id="openRadialBox">
+    <button type="button" onclick="OpenRadial2()">Open Radial Chart</button>
+</div>
+
+
+
 <div id="MSelect"><br>Mass Threshold Selection:</div>
 <div id="map" style="margin-top: 50px; margin-left: 50px; margin-right: 20%"></div>
 <div id="RadialChart" class="overlay">
@@ -540,10 +553,19 @@
     }
 
     function OpenRadial() {
-        console.log("Overlay");
+        //console.log("Overlay");
         PopulateOverlay(OriginLat, OriginLon);
         document.getElementById("RadialChart").style.width = "75%";
     }
+
+    function OpenRadial2() {
+        var latln = map.getCenter();
+        OriginLat = latln.lat();
+        OriginLon = latln.lat();
+        OpenRadial();
+    }
+
+
 
     function PopulateOverlay(lat, lon) {
         svg.selectAll("circle").remove()
@@ -678,7 +700,7 @@
     }
 
     function OpenViz3() {
-        console.log("Overlay");
+        //console.log("Overlay");
 
         //PopulateOverlay(OriginLat, OriginLon);
         document.getElementById("Viz3").style.width = "75%";
@@ -812,10 +834,10 @@
 			      .attr('class', 'node')
 			      .attr('r', 1e-6)
 			      .style("fill", function(d) {
-                    console.log(d.data.name);
+                    //console.log(d.data.name);
                     //if node on graph is a 
                     if((majorclass.search(d.data.name) != -1) || (d.data.name === "Meteorites")){
-                        console.log("yellow");
+                        //console.log("yellow");
                         return "coral";
                     }
                     return "#fff";
@@ -849,7 +871,7 @@
 			  nodeUpdate.select('circle.node')
 			    .attr('r', 10)
 			    .style("fill", function(d) {
-                    console.log(d.data.name);
+                    //console.log(d.data.name);
                     //if node on graph is a 
                     if((majorclass.search(d.data.name) != -1) || (d.data.name === "Meteorites")){
                         return "coral";
